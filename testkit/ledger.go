@@ -14,6 +14,10 @@ func NewTestLedger(t *testing.T) luca.Ledger {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { ledger.Close() })
+	t.Cleanup(func() {
+		if err := ledger.Close(); err != nil {
+			t.Errorf("closing ledger: %v", err)
+		}
+	})
 	return ledger
 }
