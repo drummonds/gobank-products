@@ -1,2 +1,5 @@
 docs/
 .task
+
+.vscode
+.tasks/
