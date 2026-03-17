@@ -1,0 +1,281 @@
+2026-01-01%2026-03-17T00:42:35Z * Deposit
+  Equity:Capital → Liability:Savings:fixed 5000 GBP
+
+2026-01-01T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-01
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-02T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-02
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-03T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-03
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-04T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-04
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-05T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-05
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-06T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-06
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-07T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-07
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-08T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-08
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-09T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-09
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-10T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-10
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-11T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-11
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-12T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-12
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-13T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-13
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-14T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-14
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-15T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-15
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-16T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-16
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-17T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-17
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-18T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-18
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-19T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-19
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-20T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-20
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-21T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-21
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-22T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-22
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-23T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-23
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-24T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-24
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-25T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-25
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-26T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-26
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-27T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-27
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-28T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-28
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-29T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-29
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-30T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-30
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-01-31T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-01-31
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-02-01T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-01
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-02-02T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-02
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-02-03T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-03
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-02-04T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-04
+  Expense:Interest → Liability:Savings:fixed 0.54 GBP
+
+2026-02-05T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-05
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-06T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-06
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-07T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-07
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-08T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-08
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-09T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-09
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-10T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-10
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-11T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-11
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-12T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-12
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-13T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-13
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-14T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-14
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-15T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-15
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-16T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-16
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-17T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-17
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-18T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-18
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-19T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-19
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-20T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-20
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-21T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-21
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-22T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-22
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-23T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-23
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-24T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-24
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-25T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-25
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-26T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-26
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-27T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-27
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-02-28T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-02-28
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-01T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-01
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-02T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-02
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-03T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-03
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-04T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-04
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-05T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-05
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-06T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-06
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-07T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-07
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-08T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-08
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-09T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-09
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-10T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-10
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-11T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-11
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-12T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-12
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-13T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-13
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-14T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-14
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-15T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-15
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-16T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-16
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-17T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-17
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-18T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-18
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-19T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-19
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-20T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-20
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-21T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-21
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-22T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-22
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-23T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-23
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-24T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-24
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-25T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-25
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-26T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-26
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-27T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-27
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-28T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-28
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-29T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-29
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-30T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-30
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-03-31T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-03-31
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-04-01T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-04-01
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
+
+2026-04-02%2026-03-17T00:42:35Z * Withdrawal
+  Liability:Savings:fixed → Equity:Capital 5000 GBP
+
+2026-04-02T23:59:59Z%2026-03-17T00:42:35Z * Daily interest for 2026-04-02
+  Expense:Interest → Liability:Savings:fixed 0.55 GBP
