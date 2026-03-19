@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-03-19
+
+ - working on interest feature
+
 ## [0.1.3] - 2026-03-19
 
  - updating checks after go-postgres update
