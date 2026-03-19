@@ -6,6 +6,7 @@ Composable banking product library for Go. Products are built from independently
 
 - [Features](features.html) -- composable building blocks and their permitted events
 - [Products](products.html) -- product catalog, event dispatch matrix, and golden goluca files
+- [Interest Accrual](interest.html) -- accrual vs application periods, AER, APR, and product recommendations
 - [API](api.html) -- simulation engine, parameter store, clock, and extension points
 - [Changelog](CHANGELOG.html)
 - [Roadmap](ROADMAP.html)

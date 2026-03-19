@@ -1,6 +1,6 @@
 # Products
 
-[Home](index.html) | [Features](features.html) | [API](api.html)
+[Home](index.html) | [Features](features.html) | [Interest](interest.html) | [API](api.html)
 
 Each product composes [features](features.html) into a feature chain. The chain defines the complete event dispatch for that product.
 

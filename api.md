@@ -1,6 +1,6 @@
 # Simulation API
 
-[Home](index.html) | [Features](features.html) | [Products](products.html)
+[Home](index.html) | [Features](features.html) | [Interest](interest.html) | [Products](products.html)
 
 ## Core types
 

@@ -1,6 +1,6 @@
 # Features
 
-[Home](index.html) | [Products](products.html) | [API](api.html)
+[Home](index.html) | [Products](products.html) | [Interest](interest.html) | [API](api.html)
 
 Features are composable building blocks. Each implements the `Feature` interface and one or more typed event handler interfaces. Features are dispatched in the order they appear in the product definition -- earlier features can validate and reject before later features execute.
 
@@ -91,7 +91,22 @@ Validates balance and records withdrawal movements.
 
 ## InterestAccrual
 
-Delegates daily interest calculation to go-luca.
+Interest has two distinct phases: **accrual** (calculating how much interest has accumulated) and **application** (crediting or debiting that amount to the account). These can run on different schedules.
+
+Accrual is always daily -- the balance can change any day, so interest must be tracked daily. The **application period** controls when accumulated interest is posted as a ledger movement: daily, monthly, quarterly, or annually. More frequent application means more compounding, which changes the effective annual rate.
+
+Key concepts:
+
+- **Nominal rate** (`annual_rate`) -- the rate set on the product, e.g. 1.5%
+- **AER** (Annual Equivalent Rate) -- the effective rate after compounding: `(1 + r/n)^n - 1` where `n` is application events per year. Used for savings products (BCOBS disclosure).
+- **APR** (Annual Percentage Rate) -- the lending equivalent of AER. Identical to AER when there are no fees; diverges once fee modelling is added.
+- **Application period** -- configured per product via the `interest_application` parameter. Recommended default: **monthly**. Current implementation: daily.
+
+The application period directly affects the AER/APR. For example, 5% nominal gives an AER of 5.1162% with monthly application but 5.1267% with daily.
+
+See [Interest Accrual](interest.html) for the full treatment: formula tables, worked examples, per-product recommendations, and implementation notes.
+
+Currently delegates daily interest calculation to go-luca.
 
 **Permitted events:**
 
