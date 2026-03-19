@@ -1,12 +1,12 @@
 module codeberg.org/hum3/gobank-products
 
-go 1.25.3
+go 1.26.0
 
 replace github.com/drummonds/go-luca => ../go-luca
 
 require (
 	github.com/drummonds/go-luca v0.2.19
-	github.com/drummonds/go-postgres v0.4.0
+	github.com/drummonds/go-postgres v0.5.0
 )
 
 require (
