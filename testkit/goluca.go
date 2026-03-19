@@ -11,9 +11,11 @@ import (
 
 var uuidRe = regexp.MustCompile(`[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`)
 var timestampRe = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})`)
+var entryDateRe = regexp.MustCompile(`%\d{4}-\d{2}-\d{2}`)
 
-// NormaliseGoluca strips UUIDs, normalises timestamps to dates, and sorts lines
-// within transaction blocks for deterministic comparison.
+// NormaliseGoluca strips UUIDs, normalises timestamps to dates, replaces
+// entry dates (after %) with a placeholder, and sorts lines within
+// transaction blocks for deterministic comparison.
 func NormaliseGoluca(raw string) string {
 	// Replace UUIDs with placeholder.
 	s := uuidRe.ReplaceAllString(raw, "<UUID>")
@@ -24,6 +26,8 @@ func NormaliseGoluca(raw string) string {
 		}
 		return ts
 	})
+	// Replace entry dates (after %) with placeholder so tests don't depend on run date.
+	s = entryDateRe.ReplaceAllString(s, "%<ENTRY>")
 
 	// Sort transaction blocks (blocks separated by blank lines) for determinism.
 	blocks := splitBlocks(s)
