@@ -3,7 +3,7 @@ package gbp
 import (
 	"fmt"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 )
 
 // DepositAcceptance validates and records deposits.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 )
 
 // RepaymentSchedule handles monthly repayment logic for lending products.

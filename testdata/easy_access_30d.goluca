@@ -1,92 +1,94 @@
-2026-01-01%2026-03-19T15:43:29Z * Deposit
+commodity GBP
+
+2026-01-01%2026-03-24T00:10:25Z * Deposit
   Equity:Capital → Liability:Savings:alice 1000 GBP
 
-2026-01-01T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-01
+2026-01-01T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-01
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-02T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-02
+2026-01-02T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-02
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-03T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-03
+2026-01-03T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-03
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-04T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-04
+2026-01-04T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-04
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-05T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-05
+2026-01-05T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-05
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-06T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-06
+2026-01-06T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-06
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-07T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-07
+2026-01-07T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-07
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-08T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-08
+2026-01-08T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-08
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-09T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-09
+2026-01-09T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-09
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-10T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-10
+2026-01-10T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-10
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-11T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-11
+2026-01-11T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-11
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-12T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-12
+2026-01-12T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-12
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-13T23:59:59Z%2026-03-19T15:43:29Z * Daily interest for 2026-01-13
+2026-01-13T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-13
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-14T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-14
+2026-01-14T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-14
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-15T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-15
+2026-01-15T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-15
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-16T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-16
+2026-01-16T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-16
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-17T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-17
+2026-01-17T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-17
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-18T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-18
+2026-01-18T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-18
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-19T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-19
+2026-01-19T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-19
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-20T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-20
+2026-01-20T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-20
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-21T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-21
+2026-01-21T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-21
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-22T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-22
+2026-01-22T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-22
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-23T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-23
+2026-01-23T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-23
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-24T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-24
+2026-01-24T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-24
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-25T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-25
+2026-01-25T23:59:59Z%2026-03-24T00:10:25Z * Daily interest for 2026-01-25
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-26T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-26
+2026-01-26T23:59:59Z%2026-03-24T00:10:26Z * Daily interest for 2026-01-26
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-27T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-27
+2026-01-27T23:59:59Z%2026-03-24T00:10:26Z * Daily interest for 2026-01-27
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-28T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-28
+2026-01-28T23:59:59Z%2026-03-24T00:10:26Z * Daily interest for 2026-01-28
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-29T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-29
+2026-01-29T23:59:59Z%2026-03-24T00:10:26Z * Daily interest for 2026-01-29
   Expense:Interest → Liability:Savings:alice 0.04 GBP
 
-2026-01-30T23:59:59Z%2026-03-19T15:43:30Z * Daily interest for 2026-01-30
+2026-01-30T23:59:59Z%2026-03-24T00:10:26Z * Daily interest for 2026-01-30
   Expense:Interest → Liability:Savings:alice 0.04 GBP

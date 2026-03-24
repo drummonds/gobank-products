@@ -3,8 +3,9 @@ package testkit
 import (
 	"testing"
 
-	luca "github.com/drummonds/go-luca"
-	_ "github.com/drummonds/go-postgres"
+	luca "codeberg.org/hum3/go-luca"
+	_ "codeberg.org/hum3/go-postgres"
+	_ "github.com/ncruces/go-sqlite3/embed"
 )
 
 // NewTestLedger creates an in-memory SQLite ledger for testing.

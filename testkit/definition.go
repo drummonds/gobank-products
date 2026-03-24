@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 
 	gbp "codeberg.org/hum3/gobank-products"
 )

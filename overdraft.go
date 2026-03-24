@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 )
 
 // OverdraftFacility allows negative balance up to an arranged limit and records the withdrawal.

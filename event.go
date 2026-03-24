@@ -3,7 +3,7 @@ package gbp
 import (
 	"time"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 )
 
 // EventType identifies the kind of simulation event.

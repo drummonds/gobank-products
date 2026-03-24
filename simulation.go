@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	luca "github.com/drummonds/go-luca"
+	luca "codeberg.org/hum3/go-luca"
 )
 
 // AccountUpdate captures the state change for one account on one day.
