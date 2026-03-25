@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-03-25
+
+ - Fix transaction directions and move interest logic to product layer
+
 ## [0.1.5] - 2026-03-24
 
  - Migrate dependencies from github.com/drummonds to codeberg.org/hum3
