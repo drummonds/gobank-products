@@ -52,7 +52,8 @@ func computeDailyInterest(balance luca.Amount, acct *luca.Account) luca.Amount {
 }
 
 // postAccrual records a daily interest IOU:
-//   Expense:Interest:Accrued → <account>:Accrue  (negative amount for savings, positive for lending)
+//
+//	Expense:Interest:Accrued → <account>:Accrue  (negative amount for savings, positive for lending)
 func postAccrual(ctx *SimContext, ma *ManagedAccount, interest luca.Amount, date time.Time) error {
 	accruePath := ma.Account.FullPath + ":Accrued"
 	accrueAcct, err := ensureAccount(ctx, accruePath, ma.Account.Commodity, ma.Account.Exponent)
