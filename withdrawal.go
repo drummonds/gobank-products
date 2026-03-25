@@ -26,15 +26,25 @@ func (WithdrawalProcessing) HandleWithdrawalRequested(ctx *SimContext, e Withdra
 	if err != nil {
 		return fmt.Errorf("check balance: %w", err)
 	}
-	if bal < e.Amount {
-		return fmt.Errorf("insufficient balance: have %d, need %d", bal, e.Amount)
-	}
 
 	code := e.Code
 	if code == "" {
 		code = luca.CodeBookTransfer
 	}
 
+	// Savings (liability): Cash → Account (balance goes less negative = debit)
+	// Lending (asset):     Account → Cash (balance decreases = credit)
+	if e.Account.Family == FamilySavings {
+		// Savings balance is negative (credit-normal); available = -bal
+		if -bal < e.Amount {
+			return fmt.Errorf("insufficient balance: have %d, need %d", -bal, e.Amount)
+		}
+		_, err = ctx.Sim.RecordMovement(e.ToPath, e.Account.Account.ID, e.Amount, code, e.Date, "Withdrawal")
+		return err
+	}
+	if bal < e.Amount {
+		return fmt.Errorf("insufficient balance: have %d, need %d", bal, e.Amount)
+	}
 	_, err = ctx.Sim.RecordMovement(e.Account.Account.ID, e.ToPath, e.Amount, code, e.Date, "Withdrawal")
 	return err
 }

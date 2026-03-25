@@ -27,6 +27,12 @@ func (DepositAcceptance) HandleDepositReceived(ctx *SimContext, e DepositReceive
 		code = luca.CodeBookTransfer
 	}
 
+	// Savings (liability): Account → Cash (balance goes negative = credit)
+	// Lending (asset):     Cash → Account (balance goes positive = debit)
+	if e.Account.Family == FamilySavings {
+		_, err := ctx.Sim.RecordMovement(e.Account.Account.ID, e.FromPath, e.Amount, code, e.Date, "Deposit")
+		return err
+	}
 	_, err := ctx.Sim.RecordMovement(e.FromPath, e.Account.Account.ID, e.Amount, code, e.Date, "Deposit")
 	return err
 }

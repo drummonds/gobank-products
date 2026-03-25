@@ -16,7 +16,7 @@ type ScenarioBuilder struct {
 	sim      *gbp.Simulation
 	clock    *gbp.SimClock
 	accounts map[string]*gbp.ManagedAccount // path → account
-	equity   *luca.Account                  // funding source
+	cash     *luca.Account                  // cash account (Assets:Cash)
 	advanced bool                           // tracks whether AdvanceDays has been called
 }
 
@@ -31,8 +31,8 @@ func NewScenario(t *testing.T) *ScenarioBuilder {
 		t.Fatal(err)
 	}
 
-	// Create an equity account for funding deposits.
-	eq, err := sim.Ledger.CreateAccount("Equity:Capital", "GBP", -2, 0)
+	// Create a cash account for deposits/withdrawals.
+	cash, err := sim.Ledger.CreateAccount("Asset:Cash", "GBP", -2, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func NewScenario(t *testing.T) *ScenarioBuilder {
 		sim:      sim,
 		clock:    clock,
 		accounts: make(map[string]*gbp.ManagedAccount),
-		equity:   eq,
+		cash:     cash,
 	}
 }
 
@@ -82,7 +82,7 @@ func (s *ScenarioBuilder) Deposit(accountPath string, amount luca.Amount) *Scena
 	if !ok {
 		s.t.Fatalf("unknown account path: %s", accountPath)
 	}
-	if err := s.sim.Deposit(ma.Account.ID, amount, s.equity.ID, luca.CodeBookTransfer); err != nil {
+	if err := s.sim.Deposit(ma.Account.ID, amount, s.cash.ID, luca.CodeBookTransfer); err != nil {
 		s.t.Fatal(err)
 	}
 	return s
@@ -95,7 +95,7 @@ func (s *ScenarioBuilder) Withdraw(accountPath string, amount luca.Amount) *Scen
 	if !ok {
 		s.t.Fatalf("unknown account path: %s", accountPath)
 	}
-	if err := s.sim.Withdraw(ma.Account.ID, amount, s.equity.ID, luca.CodeBookTransfer); err != nil {
+	if err := s.sim.Withdraw(ma.Account.ID, amount, s.cash.ID, luca.CodeBookTransfer); err != nil {
 		s.t.Fatal(err)
 	}
 	return s
@@ -108,7 +108,7 @@ func (s *ScenarioBuilder) WithdrawExpectError(accountPath string, amount luca.Am
 	if !ok {
 		s.t.Fatalf("unknown account path: %s", accountPath)
 	}
-	err := s.sim.Withdraw(ma.Account.ID, amount, s.equity.ID, luca.CodeBookTransfer)
+	err := s.sim.Withdraw(ma.Account.ID, amount, s.cash.ID, luca.CodeBookTransfer)
 	if err == nil {
 		s.t.Fatal("expected withdrawal error, got nil")
 	}

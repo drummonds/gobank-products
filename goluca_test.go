@@ -11,18 +11,18 @@ import (
 // scenarios defines one declarative golden-file scenario per product.
 var scenarios = []testkit.GolucaScenario{
 	{
-		Name:    "easy_access_30d",
+		Name:    "easy_access_32d",
 		Product: gbp.EasyAccess(),
 		FSM:     testkit.EasyAccessFSM(),
 		Account: testkit.AccountSpec{Path: "Liability:Savings:alice"},
 		Actions: []testkit.Action{
 			testkit.Deposit(100000), // £1,000.00
-			testkit.AdvanceDays(30),
+			testkit.AdvanceDays(32),
 		},
 		Spec: `
 			Given an Easy Access savings account opened 2026-01-01
 			  And a deposit of £1,000.00
-			When 30 days elapse to 2026-01-30
+			When 32 days elapse to 2026-02-01 (includes month end)
 			Then daily interest accrues at 1.5% p.a.
 			  And the goluca export round-trips cleanly`,
 	},
@@ -48,63 +48,63 @@ var scenarios = []testkit.GolucaScenario{
 			  And the withdrawal succeeds post-maturity`,
 	},
 	{
-		Name:    "isa_30d",
+		Name:    "isa_32d",
 		Product: gbp.ISA(),
 		FSM:     testkit.ISAFSM(),
 		Account: testkit.AccountSpec{Path: "Liability:Savings:isa"},
 		Actions: []testkit.Action{
 			testkit.Deposit(1000000), // £10,000.00
-			testkit.AdvanceDays(30),
+			testkit.AdvanceDays(32),
 		},
 		Spec: `
 			Given an ISA account opened 2026-01-01
 			  And a deposit of £10,000.00 (within £20k allowance)
-			When 30 days elapse
+			When 32 days elapse (includes month end)
 			Then daily interest accrues at 3.5% p.a.`,
 	},
 	{
-		Name:    "personal_loan_30d",
+		Name:    "personal_loan_32d",
 		Product: gbp.PersonalLoan(),
 		FSM:     testkit.PersonalLoanFSM(),
 		Account: testkit.AccountSpec{Path: "Asset:Loans:alice"},
 		Actions: []testkit.Action{
 			testkit.Deposit(500000), // £5,000.00 disbursement
-			testkit.AdvanceDays(30),
+			testkit.AdvanceDays(32),
 		},
 		Spec: `
 			Given a Personal Loan account opened 2026-01-01
 			  And £5,000.00 disbursed
-			When 30 days elapse
+			When 32 days elapse (includes month end)
 			Then daily interest accrues at 6.9% p.a.`,
 	},
 	{
-		Name:    "mortgage_30d",
+		Name:    "mortgage_32d",
 		Product: gbp.Mortgage(),
 		FSM:     testkit.MortgageFSM(),
 		Account: testkit.AccountSpec{Path: "Asset:Loans:mortgage"},
 		Actions: []testkit.Action{
 			testkit.Deposit(10000000), // £100,000.00 disbursement
-			testkit.AdvanceDays(30),
+			testkit.AdvanceDays(32),
 		},
 		Spec: `
 			Given a Mortgage account opened 2026-01-01
 			  And £100,000.00 disbursed
-			When 30 days elapse
+			When 32 days elapse (includes month end)
 			Then daily interest accrues at 4.5% p.a.`,
 	},
 	{
-		Name:    "overdraft_30d",
+		Name:    "overdraft_32d",
 		Product: gbp.Overdraft(),
 		FSM:     testkit.OverdraftFSM(),
 		Account: testkit.AccountSpec{Path: "Liability:Current:alice"},
 		Actions: []testkit.Action{
 			testkit.Withdraw(50000), // £500.00 overdraft draw
-			testkit.AdvanceDays(30),
+			testkit.AdvanceDays(32),
 		},
 		Spec: `
 			Given an Overdraft facility account opened 2026-01-01
 			  And £500.00 drawn (within £1,000 limit)
-			When 30 days elapse
+			When 32 days elapse (includes month end)
 			Then daily interest accrues at 15.9% p.a. on negative balance`,
 	},
 }

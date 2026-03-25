@@ -13,7 +13,7 @@ func TestWithdrawal_Basic(t *testing.T) {
 		OpenAccount("easy-access", "Liability:Savings:alice").
 		Deposit("Liability:Savings:alice", 100000).
 		Withdraw("Liability:Savings:alice", 30000).
-		AssertBalance("Liability:Savings:alice", 70000)
+		AssertBalance("Liability:Savings:alice", -70000) // credit-normal
 }
 
 func TestWithdrawal_InsufficientFunds(t *testing.T) {

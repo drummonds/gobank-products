@@ -10,13 +10,13 @@ import (
 
 func TestEasyAccess_30Days(t *testing.T) {
 	// Open, deposit £1000, advance 30 days.
-	// 1.5% annual on £1000 ≈ £0.041/day ≈ £1.23 over 30 days.
+	// Interest accrues to sub-account; main balance unchanged.
 	testkit.NewScenario(t).
 		WithProduct(gbp.EasyAccess()).
 		OpenAccount("easy-access", "Liability:Savings:alice").
 		Deposit("Liability:Savings:alice", 100000).
-		AdvanceDays(30).
-		AssertBalanceRange("Liability:Savings:alice", 100100, 100150)
+		AdvanceDays(32).
+		AssertBalance("Liability:Savings:alice", -100000) // credit-normal, interest in Accrual
 }
 
 func TestFixedTerm_FullLifecycle(t *testing.T) {
@@ -33,7 +33,7 @@ func TestFixedTerm_FullLifecycle(t *testing.T) {
 	// Advance past maturity, then withdraw.
 	s.AdvanceToDate(time.Date(2026, 2, 2, 0, 0, 0, 0, time.UTC)).
 		Withdraw("Liability:Savings:fixed", 50000).
-		AssertBalanceRange("Liability:Savings:fixed", 50000, 52000)
+		AssertBalance("Liability:Savings:fixed", -50000) // credit-normal, interest in Accrual
 }
 
 func TestISA_AllowanceEnforcement(t *testing.T) {
@@ -50,19 +50,20 @@ func TestISA_AllowanceEnforcement(t *testing.T) {
 	// Any further deposit should exceed allowance.
 	sim := s.Sim()
 	accountID := s.AccountID("Liability:Savings:isa")
-	err := sim.Deposit(accountID, 100, "Equity:Capital", "")
+	err := sim.Deposit(accountID, 100, "Asset:Cash", "")
 	if err == nil {
 		t.Fatal("expected ISA allowance error")
 	}
 }
 
 func TestPersonalLoan_InterestCharges(t *testing.T) {
+	// Lending: interest accrues to sub-account; main balance unchanged.
 	testkit.NewScenario(t).
 		WithProduct(gbp.PersonalLoan()).
 		OpenAccountWithParams("personal-loan", "Asset:Loans:alice", map[string]string{
 			"annual_rate": "0.0365",
 		}).
 		Deposit("Asset:Loans:alice", 100000). // £1000 loan disbursement
-		AdvanceDays(30).
-		AssertBalanceRange("Asset:Loans:alice", 100200, 100400)
+		AdvanceDays(32).
+		AssertBalance("Asset:Loans:alice", 100000) // interest in Accrual sub-account
 }

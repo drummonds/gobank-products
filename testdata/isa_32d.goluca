@@ -1,0 +1,100 @@
+commodity GBP
+
+2026-01-01%2026-03-25T21:09:03Z * Deposit
+  Liability:Savings:isa → Asset:Cash 10000 GBP
+
+2026-01-01T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-01
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-02T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-02
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-03T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-03
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-04T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-04
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-05T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-05
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-06T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-06
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-07T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-07
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-08T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-08
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-09T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-09
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-10T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-10
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-11T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-11
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-12T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-12
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-13T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-13
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-14T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-14
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-15T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-15
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-16T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-16
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-17T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-17
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-18T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-18
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-19T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-19
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-20T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-20
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-21T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-21
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-22T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-22
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-23T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-23
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-24T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-24
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-25T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-25
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-26T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-26
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-27T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-27
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-28T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-28
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-29T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-29
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-30T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-30
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-01-31T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-01-31
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP
+
+2026-02-01T23:59:59Z%2026-03-25T21:09:03Z * Daily interest for 2026-02-01
+  Expense:Interest:Accrued → Liability:Savings:isa:Accrued -0.95 GBP

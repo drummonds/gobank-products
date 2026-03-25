@@ -35,6 +35,7 @@ func (s AccountStatus) String() string {
 type ManagedAccount struct {
 	Account   *luca.Account
 	ProductID string
+	Family    ProductFamily
 	Status    AccountStatus
 	OpenedAt  time.Time
 	ClosedAt  time.Time

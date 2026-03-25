@@ -42,9 +42,6 @@ type Simulation struct {
 
 // NewSimulation creates a new simulation engine.
 func NewSimulation(ledger luca.Ledger, clock Clock) (*Simulation, error) {
-	if err := ledger.EnsureInterestAccounts(); err != nil {
-		return nil, fmt.Errorf("ensure interest accounts: %w", err)
-	}
 	return &Simulation{
 		Ledger:    ledger,
 		Clock:     clock,
@@ -104,6 +101,7 @@ func (s *Simulation) OpenAccount(productID, accountPath, currency string, expone
 	ma := &ManagedAccount{
 		Account:   acct,
 		ProductID: productID,
+		Family:    prod.Family,
 		Status:    StatusPending,
 		OpenedAt:  s.Clock.Now(),
 	}

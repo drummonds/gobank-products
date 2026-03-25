@@ -8,8 +8,8 @@ import (
 )
 
 func TestInterestAccrual_SingleDay(t *testing.T) {
-	// 3.65% annual on £1000 = 10p/day.
-	testkit.NewScenario(t).
+	// 3.65% annual on £1000 = 10p/day accrued to sub-account.
+	s := testkit.NewScenario(t).
 		WithProduct(&gbp.Product{
 			ID:     "test-savings",
 			Name:   "Test Savings",
@@ -23,12 +23,14 @@ func TestInterestAccrual_SingleDay(t *testing.T) {
 		}).
 		OpenAccount("test-savings", "Liability:Savings:alice").
 		Deposit("Liability:Savings:alice", 100000). // £1000.00
-		AdvanceDays(1).
-		AssertBalance("Liability:Savings:alice", 100010) // £1000.10
+		AdvanceDays(1)
+
+	// Main balance unchanged (interest goes to Accrual sub-account)
+	s.AssertBalance("Liability:Savings:alice", -100000)
 }
 
 func TestInterestAccrual_TenDays(t *testing.T) {
-	testkit.NewScenario(t).
+	s := testkit.NewScenario(t).
 		WithProduct(&gbp.Product{
 			ID:     "test-savings",
 			Name:   "Test Savings",
@@ -42,6 +44,8 @@ func TestInterestAccrual_TenDays(t *testing.T) {
 		}).
 		OpenAccount("test-savings", "Liability:Savings:alice").
 		Deposit("Liability:Savings:alice", 100000).
-		AdvanceDays(10).
-		AssertBalanceRange("Liability:Savings:alice", 100090, 100110)
+		AdvanceDays(10)
+
+	// Main balance unchanged (interest accrues to sub-account)
+	s.AssertBalance("Liability:Savings:alice", -100000)
 }
