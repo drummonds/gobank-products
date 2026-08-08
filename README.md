@@ -5,13 +5,13 @@ Composable banking product library for Go. Products are built from independently
 ## Links
 
 - **Documentation**: https://h3-gobank-products.statichost.eu
-- **Source**: https://codeberg.org/hum3/gobank-products
+- **Source**: https://git.bytestone.uk/hum3/gobank-products
 - **Mirror**: https://github.com/drummonds/gobank-products
 
 ## Usage
 
 ```go
-import gbp "codeberg.org/hum3/gobank-products"
+import gbp "git.bytestone.uk/hum3/gobank-products"
 
 sim, _ := gbp.NewSimulation(ledger, clock)
 sim.RegisterProduct(gbp.EasyAccess())

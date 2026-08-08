@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	luca "codeberg.org/hum3/go-luca"
+	luca "git.bytestone.uk/hum3/go-luca"
 	"github.com/shopspring/decimal"
 )
 

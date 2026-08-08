@@ -3,8 +3,8 @@ package testkit
 import (
 	"testing"
 
-	luca "codeberg.org/hum3/go-luca"
-	_ "codeberg.org/hum3/go-postgres"
+	luca "git.bytestone.uk/hum3/go-luca"
+	_ "git.bytestone.uk/hum3/go-postgres"
 	_ "github.com/ncruces/go-sqlite3/embed"
 )
 

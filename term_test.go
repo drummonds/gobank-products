@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	gbp "codeberg.org/hum3/gobank-products"
-	"codeberg.org/hum3/gobank-products/testkit"
+	gbp "git.bytestone.uk/hum3/gobank-products"
+	"git.bytestone.uk/hum3/gobank-products/testkit"
 )
 
 func TestTermLock_BlocksEarlyWithdrawal(t *testing.T) {

@@ -1,16 +1,16 @@
-module codeberg.org/hum3/gobank-products
+module git.bytestone.uk/hum3/gobank-products
 
 go 1.26.0
 
 require (
-	codeberg.org/hum3/go-luca v0.2.25
-	codeberg.org/hum3/go-postgres v0.5.2
+	git.bytestone.uk/hum3/go-luca v0.2.25
+	git.bytestone.uk/hum3/go-postgres v0.5.2
 	github.com/ncruces/go-sqlite3 v0.32.0
 	github.com/shopspring/decimal v1.4.0
 )
 
 require (
-	codeberg.org/hum3/gotreesitter v0.6.6 // indirect
+	git.bytestone.uk/hum3/gotreesitter v0.6.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/ncruces/julianday v1.0.0 // indirect
 	github.com/tetratelabs/wazero v1.11.0 // indirect

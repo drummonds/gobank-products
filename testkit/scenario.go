@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	luca "codeberg.org/hum3/go-luca"
+	luca "git.bytestone.uk/hum3/go-luca"
 
-	gbp "codeberg.org/hum3/gobank-products"
+	gbp "git.bytestone.uk/hum3/gobank-products"
 )
 
 // ScenarioBuilder provides a fluent API for defining test scenarios.

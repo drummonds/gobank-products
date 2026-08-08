@@ -188,7 +188,7 @@ scenario.RunGolden(t)  // compare against testdata/my_product_30d.goluca
 
 Customer-initiated events (`DepositReceived`, `WithdrawalRequested`) currently execute as instantaneous book transfers. There is no concept of payment initiation, asynchronous settlement, payment failure, or reconciliation.
 
-In production, deposits arrive as inbound FPS credits and withdrawals are outbound FPS debits. The full payment lifecycle belongs in [mock-fps](https://codeberg.org/hum3/mock-fps), not in gobank-products. The boundary is:
+In production, deposits arrive as inbound FPS credits and withdrawals are outbound FPS debits. The full payment lifecycle belongs in [mock-fps](https://git.bytestone.uk/hum3/mock-fps), not in gobank-products. The boundary is:
 
 - **gobank-products**: product rules, interest, lifecycle, ledger movements (assumes payments succeed)
 - **mock-fps**: payment scheme simulation, failure modes, async settlement, reconciliation

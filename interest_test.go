@@ -3,8 +3,8 @@ package gbp_test
 import (
 	"testing"
 
-	gbp "codeberg.org/hum3/gobank-products"
-	"codeberg.org/hum3/gobank-products/testkit"
+	gbp "git.bytestone.uk/hum3/gobank-products"
+	"git.bytestone.uk/hum3/gobank-products/testkit"
 )
 
 func TestInterestAccrual_SingleDay(t *testing.T) {

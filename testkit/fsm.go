@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	gbp "codeberg.org/hum3/gobank-products"
+	gbp "git.bytestone.uk/hum3/gobank-products"
 )
 
 // Transition defines a valid (state, event) → state mapping with an optional guard.
