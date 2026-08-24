@@ -8,8 +8,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [0.1.9] - 2026-08-24
 
- - Bump go-luca to v0.2.31 to fix unresolvable post-rename pin
-
  - Bump go-luca to v0.2.31 (with go-postgres v0.5.5, gotreesitter v0.6.8);
    the previous go-luca v0.2.25 pin was unresolvable under the
    git.bytestone.uk module path
