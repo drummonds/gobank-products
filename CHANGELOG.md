@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+ - Bump go-luca to v0.2.31 (with go-postgres v0.5.5, gotreesitter v0.6.8);
+   the previous go-luca v0.2.25 pin was unresolvable under the
+   git.bytestone.uk module path
+
 ## [0.1.6] - 2026-03-25
 
  - Fix transaction directions and move interest logic to product layer
