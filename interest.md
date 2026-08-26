@@ -185,15 +185,12 @@ When `accrual_precision` is `exact`, the 10,000 x 365 integer fraction method is
 
 ## Implementation notes
 
-The core interest calculation lives in go-luca. Changes needed in go-luca:
+Implemented in gobank-products v0.1.10 (the calculation lives in the product
+layer, not go-luca):
 
-1. **Accrual register** -- per-account accumulator at configurable precision (5dp, 10dp, or exact integer fraction). Tracks accrued-but-unapplied interest separately from the applied ledger balance.
-2. **Day count convention** -- parameterise the daily divisor (365 fixed, or actual days in year).
-3. **Exact fraction mode** -- accumulate numerator with denominator `10000 * day_count_divisor`, divide only at application time, carry remainder.
-4. **Correct ledger directions** -- interest movements use negative expense-to-liability for savings, positive liability-to-income for lending.
+1. **Accrual register** -- `ManagedAccount.AccruedNumerator` holds accrued-but-unapplied interest as an exact integer fraction over `AccrualDenominator` (10,000 x 365). Daily accrual adds `cached_balance_minor_units * rate_bps`; no rounding occurs until application, and the sub-minor-unit remainder carries forward, so small balances never lose interest.
+2. **Cached balances** -- `ManagedAccount.CachedBalance` is maintained by `Simulation.RecordMovement`, so daily accrual issues no balance queries. `Simulation.RefreshBalances` re-primes the cache after a ledger import.
+3. **Daily accrual, monthly application** -- `InterestAccrual` accrues in memory at `EndOfDay` (idempotent per date via `LastAccrued`, so accounts can be accrued individually, spread across the day) and posts one ledger movement per account at `EndOfMonth`.
+4. **Ledger directions** -- savings apply as `Expense:Interest -> account`; lending as `Income:Interest -> account` (increases the customer obligation).
 
-Changes needed in gobank-products:
-
-1. **InterestAccrual feature** -- gain awareness of `interest_application`, `day_count`, and `accrual_precision` parameters. Branch between immediate application (daily) and deferred application (monthly/quarterly/annually).
-2. **AER/APR computation** -- derive from `annual_rate`, `interest_application`, and `day_count` for product documentation and regulatory output.
-3. **Golden files** -- regenerate with correct ledger directions and correct arithmetic.
+Still open: configurable `interest_application` period (quarterly/annually), `day_count` conventions beyond actual/365, closed-form multi-day accrual between change events (a month at a time), AER/APR computation, and rate changes mid-period.

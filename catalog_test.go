@@ -10,13 +10,13 @@ import (
 
 func TestEasyAccess_30Days(t *testing.T) {
 	// Open, deposit £1000, advance 30 days.
-	// Interest accrues to sub-account; main balance unchanged.
+	// Interest accrues daily in memory and is applied at month-end.
 	testkit.NewScenario(t).
 		WithProduct(gbp.EasyAccess()).
 		OpenAccount("easy-access", "Liability:Savings:alice").
 		Deposit("Liability:Savings:alice", 100000).
 		AdvanceDays(32).
-		AssertBalance("Liability:Savings:alice", -100000) // credit-normal, interest in Accrual
+		AssertBalance("Liability:Savings:alice", -100127) // credit-normal; Jan interest (31d @ 150bps = 127p) applied at month-end
 }
 
 func TestFixedTerm_FullLifecycle(t *testing.T) {
@@ -33,7 +33,7 @@ func TestFixedTerm_FullLifecycle(t *testing.T) {
 	// Advance past maturity, then withdraw.
 	s.AdvanceToDate(time.Date(2026, 2, 2, 0, 0, 0, 0, time.UTC)).
 		Withdraw("Liability:Savings:fixed", 50000).
-		AssertBalance("Liability:Savings:fixed", -50000) // credit-normal, interest in Accrual
+		AssertBalance("Liability:Savings:fixed", -50339) // credit-normal; Jan interest (31d @ 400bps = 339p) applied
 }
 
 func TestISA_AllowanceEnforcement(t *testing.T) {
@@ -57,7 +57,7 @@ func TestISA_AllowanceEnforcement(t *testing.T) {
 }
 
 func TestPersonalLoan_InterestCharges(t *testing.T) {
-	// Lending: interest accrues to sub-account; main balance unchanged.
+	// Lending: interest accrues daily, charged to the loan at month-end.
 	testkit.NewScenario(t).
 		WithProduct(gbp.PersonalLoan()).
 		OpenAccountWithParams("personal-loan", "Asset:Loans:alice", map[string]string{
@@ -65,5 +65,5 @@ func TestPersonalLoan_InterestCharges(t *testing.T) {
 		}).
 		Deposit("Asset:Loans:alice", 100000). // £1000 loan disbursement
 		AdvanceDays(32).
-		AssertBalance("Asset:Loans:alice", 100000) // interest in Accrual sub-account
+		AssertBalance("Asset:Loans:alice", 100310) // Jan interest charged (31d @ 365bps = 10p/day = 310p)
 }

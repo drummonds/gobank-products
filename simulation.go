@@ -3,6 +3,7 @@ package gbp
 import (
 	"fmt"
 	"io"
+	"math"
 	"time"
 
 	luca "git.bytestone.uk/hum3/go-luca"
@@ -14,8 +15,14 @@ type AccountUpdate struct {
 	Date           time.Time
 	OpeningBalance luca.Amount
 	ClosingBalance luca.Amount
-	InterestAmount luca.Amount
+	InterestAmount luca.Amount // balance change over the day (nonzero on application days)
 	Exponent       int
+	// AccruedDelta is the interest accrued this day in AccrualDenominator
+	// numerator units (minor units = AccruedDelta / AccrualDenominator).
+	AccruedDelta int64
+	// AccruedNumerator is the accrued-but-unapplied accumulator after this
+	// day, in the same numerator units.
+	AccruedNumerator int64
 }
 
 // DailyUpdate collects all account updates for a single processing day.
@@ -38,6 +45,11 @@ type Simulation struct {
 	startDate          time.Time
 	lastProcessedDate  time.Time
 	dailyUpdateHandler DailyUpdateHandler
+
+	// PaceHook, when set, is called after each account is processed during
+	// end-of-day and end-of-month sweeps. Single-threaded hosts (WASM) can
+	// yield to their event loop here to stay responsive during large sweeps.
+	PaceHook func()
 }
 
 // NewSimulation creates a new simulation engine.
@@ -104,6 +116,7 @@ func (s *Simulation) OpenAccount(productID, accountPath, currency string, expone
 		Family:    prod.Family,
 		Status:    StatusPending,
 		OpenedAt:  s.Clock.Now(),
+		RateBps:   int64(math.Round(rate * 10_000)), // Round handles negative (Japan-style) rates too
 	}
 	s.accounts[acct.ID] = ma
 
@@ -251,9 +264,10 @@ func (s *Simulation) ExportGoluca(w io.Writer) error {
 	return s.Ledger.Export(w)
 }
 
-// processEndOfDay runs end-of-day for all active accounts.
+// processEndOfDay runs end-of-day for all active accounts. Balances come from
+// the per-account cache, so a sweep issues no balance queries; features that
+// only accrue in memory (InterestAccrual) make the whole sweep query-free.
 func (s *Simulation) processEndOfDay(date time.Time) (DailyUpdate, error) {
-	eod := endOfDay(date)
 	update := DailyUpdate{Date: date}
 
 	for _, ma := range s.accounts {
@@ -261,10 +275,8 @@ func (s *Simulation) processEndOfDay(date time.Time) (DailyUpdate, error) {
 			continue
 		}
 
-		preBalance, err := s.Ledger.BalanceAt(ma.Account.ID, eod)
-		if err != nil {
-			return update, fmt.Errorf("pre-balance for %s: %w", ma.Account.ID, err)
-		}
+		preBalance := ma.CachedBalance
+		preAccrued := ma.AccruedNumerator
 
 		ctx := &SimContext{Sim: s, Params: s.Params, Clock: s.Clock, AsOfDate: date}
 		event := EndOfDayEvent{
@@ -280,19 +292,19 @@ func (s *Simulation) processEndOfDay(date time.Time) (DailyUpdate, error) {
 			return update, fmt.Errorf("end of day for %s: %w", ma.Account.ID, err)
 		}
 
-		postBalance, err := s.Ledger.Balance(ma.Account.ID)
-		if err != nil {
-			return update, fmt.Errorf("post-balance for %s: %w", ma.Account.ID, err)
-		}
-
 		update.Accounts = append(update.Accounts, AccountUpdate{
-			Account:        ma,
-			Date:           date,
-			OpeningBalance: preBalance,
-			ClosingBalance: postBalance,
-			InterestAmount: postBalance - preBalance,
-			Exponent:       ma.Account.Exponent,
+			Account:          ma,
+			Date:             date,
+			OpeningBalance:   preBalance,
+			ClosingBalance:   ma.CachedBalance,
+			InterestAmount:   ma.CachedBalance - preBalance,
+			Exponent:         ma.Account.Exponent,
+			AccruedDelta:     ma.AccruedNumerator - preAccrued,
+			AccruedNumerator: ma.AccruedNumerator,
 		})
+		if s.PaceHook != nil {
+			s.PaceHook()
+		}
 	}
 
 	return update, nil
@@ -316,6 +328,9 @@ func (s *Simulation) processEndOfMonth(date time.Time) error {
 		}); err != nil {
 			return fmt.Errorf("end of month for %s: %w", ma.Account.ID, err)
 		}
+		if s.PaceHook != nil {
+			s.PaceHook()
+		}
 	}
 	return nil
 }
@@ -338,17 +353,37 @@ func (s *Simulation) dispatchEvent(productID string, eventType EventType, fn fun
 	return nil
 }
 
-// RecordMovement records a ledger movement (exposed for features).
+// RecordMovement records a ledger movement (exposed for features) and keeps
+// the cached balances of any managed accounts involved in sync.
 func (s *Simulation) RecordMovement(fromID, toID string, amount luca.Amount, code string, valueTime time.Time, description string) (*luca.Movement, error) {
-	return s.Ledger.RecordMovement(fromID, toID, amount, code, valueTime, description)
+	m, err := s.Ledger.RecordMovement(fromID, toID, amount, code, valueTime, description)
+	if err != nil {
+		return nil, err
+	}
+	if ma, ok := s.accounts[fromID]; ok {
+		ma.CachedBalance -= amount
+	}
+	if ma, ok := s.accounts[toID]; ok {
+		ma.CachedBalance += amount
+	}
+	return m, nil
+}
+
+// RefreshBalances reloads every managed account's cached balance from the
+// ledger. Call after mutating the ledger outside RecordMovement (e.g. import).
+func (s *Simulation) RefreshBalances() error {
+	for id, ma := range s.accounts {
+		bal, err := s.Ledger.Balance(id)
+		if err != nil {
+			return fmt.Errorf("refresh balance for %s: %w", id, err)
+		}
+		ma.CachedBalance = bal
+	}
+	return nil
 }
 
 func startOfDay(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-}
-
-func endOfDay(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, t.Location())
 }
 
 func nextDay(t time.Time) time.Time {

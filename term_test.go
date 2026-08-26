@@ -30,5 +30,5 @@ func TestTermLock_AllowsWithdrawalAfterMaturity(t *testing.T) {
 	// Advance past maturity.
 	s.AdvanceToDate(time.Date(2026, 2, 2, 0, 0, 0, 0, time.UTC)).
 		Withdraw("Liability:Savings:fixed", 50000).
-		AssertBalance("Liability:Savings:fixed", -50000) // credit-normal, interest in Accrual
+		AssertBalance("Liability:Savings:fixed", -50339) // credit-normal; Jan interest applied at month-end
 }

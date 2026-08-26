@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-08-26
+
+ - Rework InterestAccrual: exact integer daily accrual in memory (numerator
+   over 10,000 x 365, remainder carried — sub-penny interest is no longer
+   lost), applied to the account monthly as a single ledger movement.
+   Previously interest posted daily to :Accrued sub-accounts and was never
+   applied to balances.
+ - ManagedAccount gains CachedBalance (maintained by RecordMovement,
+   removing per-day balance queries from end-of-day sweeps), RateBps,
+   AccruedNumerator, and AccruedInterest().
+ - Simulation gains RefreshBalances (post-import cache priming) and
+   PaceHook (lets single-threaded hosts yield during account sweeps).
+ - AccountUpdate gains AccruedDelta and AccruedNumerator.
+
 ## [0.1.9] - 2026-08-24
 
  - Bump go-luca to v0.2.31 (with go-postgres v0.5.5, gotreesitter v0.6.8);
