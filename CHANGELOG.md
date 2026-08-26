@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [0.1.10] - 2026-08-26
 
+ - Exact daily interest accrual in memory with monthly application; cached balances; PaceHook
+
+## [0.1.10] - 2026-08-26
+
  - Rework InterestAccrual: exact integer daily accrual in memory (numerator
    over 10,000 x 365, remainder carried — sub-penny interest is no longer
    lost), applied to the account monthly as a single ledger movement.
