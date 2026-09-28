@@ -51,6 +51,6 @@ Products are pure data -- a name, family, list of features, and default paramete
 
 ## Links
 
-- **Documentation**: [h3-gobank-products.statichost.eu](https://h3-gobank-products.statichost.eu)
+- **Documentation**: [gobank-products.docs.bytestone.uk](https://gobank-products.docs.bytestone.uk/)
 - **Source**: [git.bytestone.uk/hum3/gobank-products](https://git.bytestone.uk/hum3/gobank-products)
 - **Mirror**: [github.com/drummonds/gobank-products](https://github.com/drummonds/gobank-products)
