@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+ - `Simulation.AdoptAccount`: put an account that already exists in the
+   ledger under the engine's management (status, opened date, cached balance
+   and parameters as the caller read them) without creating it or raising an
+   AccountOpened event. A bank restarting over a stored ledger brings its
+   accounts back this way. Rate resolution is shared with `OpenAccount`.
+
 ## [0.1.10] - 2026-08-26
 
  - Exact daily interest accrual in memory with monthly application; cached balances; PaceHook

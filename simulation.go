@@ -89,20 +89,9 @@ func (s *Simulation) OpenAccount(productID, accountPath, currency string, expone
 		return nil, fmt.Errorf("unknown product: %s", productID)
 	}
 
-	// Determine annual interest rate from params or product defaults.
-	rate := 0.0
-	if v, ok := params["annual_rate"]; ok {
-		var err error
-		rate, err = parseFloat(v)
-		if err != nil {
-			return nil, fmt.Errorf("invalid annual_rate: %w", err)
-		}
-	} else if v, ok := prod.Defaults["annual_rate"]; ok {
-		var err error
-		rate, err = parseFloat(v)
-		if err != nil {
-			return nil, fmt.Errorf("invalid default annual_rate: %w", err)
-		}
+	rate, err := annualRate(prod, params)
+	if err != nil {
+		return nil, err
 	}
 
 	acct, err := s.Ledger.CreateAccount(accountPath, currency, exponent, rate)
@@ -110,24 +99,8 @@ func (s *Simulation) OpenAccount(productID, accountPath, currency string, expone
 		return nil, fmt.Errorf("create account: %w", err)
 	}
 
-	ma := &ManagedAccount{
-		Account:   acct,
-		ProductID: productID,
-		Family:    prod.Family,
-		Status:    StatusPending,
-		OpenedAt:  s.Clock.Now(),
-		RateBps:   int64(math.Round(rate * 10_000)), // Round handles negative (Japan-style) rates too
-	}
-	s.accounts[acct.ID] = ma
-
-	// Store all params (product defaults first, then overrides).
 	now := s.Clock.Now()
-	for k, v := range prod.Defaults {
-		s.Params.Set(acct.ID, k, v, now)
-	}
-	for k, v := range params {
-		s.Params.Set(acct.ID, k, v, now)
-	}
+	ma := s.manage(acct, prod, rate, StatusPending, now, params)
 
 	// Dispatch AccountOpened event.
 	ctx := &SimContext{Sim: s, Params: s.Params, Clock: s.Clock, AsOfDate: now}
@@ -145,6 +118,83 @@ func (s *Simulation) OpenAccount(productID, accountPath, currency string, expone
 	}
 
 	return ma, nil
+}
+
+// Adoption is an account that already exists in the ledger, as the caller
+// read it, for the engine to manage from now on: a bank restarting over a
+// stored ledger brings its accounts back this way.
+type Adoption struct {
+	Account   *luca.Account
+	ProductID string
+	Status    AccountStatus
+	OpenedAt  time.Time
+	Balance   luca.Amount // the account's ledger balance now, which the engine then caches
+	Params    map[string]string
+}
+
+// AdoptAccount registers an existing ledger account as a managed account of
+// a registered product. Unlike OpenAccount it creates nothing in the ledger
+// and dispatches no AccountOpened event: the account was opened in an
+// earlier run. Accrued-but-unapplied interest is the caller's to restore
+// on the returned account.
+func (s *Simulation) AdoptAccount(a Adoption) (*ManagedAccount, error) {
+	prod, ok := s.products[a.ProductID]
+	if !ok {
+		return nil, fmt.Errorf("unknown product: %s", a.ProductID)
+	}
+	if a.Account == nil {
+		return nil, fmt.Errorf("adopt account: no ledger account")
+	}
+	rate, err := annualRate(prod, a.Params)
+	if err != nil {
+		return nil, err
+	}
+	ma := s.manage(a.Account, prod, rate, a.Status, a.OpenedAt, a.Params)
+	ma.CachedBalance = a.Balance
+	return ma, nil
+}
+
+// annualRate is the account's annual interest rate: the annual_rate param,
+// else the product default, else zero.
+func annualRate(prod *Product, params map[string]string) (float64, error) {
+	if v, ok := params["annual_rate"]; ok {
+		rate, err := parseFloat(v)
+		if err != nil {
+			return 0, fmt.Errorf("invalid annual_rate: %w", err)
+		}
+		return rate, nil
+	}
+	if v, ok := prod.Defaults["annual_rate"]; ok {
+		rate, err := parseFloat(v)
+		if err != nil {
+			return 0, fmt.Errorf("invalid default annual_rate: %w", err)
+		}
+		return rate, nil
+	}
+	return 0, nil
+}
+
+// manage puts a ledger account under the engine's management on a product,
+// recording its parameters (product defaults first, then overrides) as of
+// the engine clock.
+func (s *Simulation) manage(acct *luca.Account, prod *Product, rate float64, status AccountStatus, openedAt time.Time, params map[string]string) *ManagedAccount {
+	ma := &ManagedAccount{
+		Account:   acct,
+		ProductID: prod.ID,
+		Family:    prod.Family,
+		Status:    status,
+		OpenedAt:  openedAt,
+		RateBps:   int64(math.Round(rate * 10_000)), // Round handles negative (Japan-style) rates too
+	}
+	s.accounts[acct.ID] = ma
+	now := s.Clock.Now()
+	for k, v := range prod.Defaults {
+		s.Params.Set(acct.ID, k, v, now)
+	}
+	for k, v := range params {
+		s.Params.Set(acct.ID, k, v, now)
+	}
+	return ma
 }
 
 // GetManagedAccount returns a managed account by its ledger account ID.
