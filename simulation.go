@@ -15,7 +15,7 @@ type AccountUpdate struct {
 	Date           time.Time
 	OpeningBalance luca.Amount
 	ClosingBalance luca.Amount
-	InterestAmount luca.Amount // balance change over the day (nonzero on application days)
+	InterestAmount luca.Amount // interest applied this day (the balance change over the day's rules)
 	Exponent       int
 	// AccruedDelta is the interest accrued this day in AccrualDenominator
 	// numerator units (minor units = AccruedDelta / AccrualDenominator).
@@ -343,13 +343,15 @@ func (s *Simulation) processEndOfDay(date time.Time) (DailyUpdate, error) {
 		}
 
 		update.Accounts = append(update.Accounts, AccountUpdate{
-			Account:          ma,
-			Date:             date,
-			OpeningBalance:   preBalance,
-			ClosingBalance:   ma.CachedBalance,
-			InterestAmount:   ma.CachedBalance - preBalance,
-			Exponent:         ma.Account.Exponent,
-			AccruedDelta:     ma.AccruedNumerator - preAccrued,
+			Account:        ma,
+			Date:           date,
+			OpeningBalance: preBalance,
+			ClosingBalance: ma.CachedBalance,
+			InterestAmount: ma.CachedBalance - preBalance,
+			Exponent:       ma.Account.Exponent,
+			// The day's accrual alone: application moves whole minor units
+			// out of the accumulator and into the balance, so add them back.
+			AccruedDelta:     ma.AccruedNumerator + int64(ma.CachedBalance-preBalance)*AccrualDenominator - preAccrued,
 			AccruedNumerator: ma.AccruedNumerator,
 		})
 		if s.PaceHook != nil {

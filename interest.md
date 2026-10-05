@@ -166,7 +166,7 @@ Each product specifies its interest method via parameters:
 | Parameter | Values | Default |
 |-----------|--------|---------|
 | `annual_rate` | Decimal (e.g. `0.035`) | Set per product |
-| `interest_application` | `daily`, `monthly`, `quarterly`, `annually` | `daily` (current) |
+| `interest_application` | `daily`, `monthly`, `annual` | `monthly` (quarterly not yet) |
 | `day_count` | `actual_365`, `actual_actual` | `actual_365` |
 | `accrual_precision` | `5`, `10`, or `exact` | `5` |
 
@@ -190,7 +190,7 @@ layer, not go-luca):
 
 1. **Accrual register** -- `ManagedAccount.AccruedNumerator` holds accrued-but-unapplied interest as an exact integer fraction over `AccrualDenominator` (10,000 x 365). Daily accrual adds `cached_balance_minor_units * rate_bps`; no rounding occurs until application, and the sub-minor-unit remainder carries forward, so small balances never lose interest.
 2. **Cached balances** -- `ManagedAccount.CachedBalance` is maintained by `Simulation.RecordMovement`, so daily accrual issues no balance queries. `Simulation.RefreshBalances` re-primes the cache after a ledger import.
-3. **Daily accrual, monthly application** -- `InterestAccrual` accrues in memory at `EndOfDay` (idempotent per date via `LastAccrued`, so accounts can be accrued individually, spread across the day) and posts one ledger movement per account at `EndOfMonth`.
+3. **The day rule, `Product.NextDay`** -- a pure function from an account's position at the end of the previous day (go-luca `Position`: balance and accrued interest as an exact fraction) and the day's closing balance to the position at the end of this day and the ledger postings it calls for. Interest accrues on the closing balance; when the product's `interest_application` cycle ends on this day the whole minor units are applied and the remainder carries forward. Application is therefore product code inside the daily pass, not a separate month-end run. `InterestAccrual` runs it at `EndOfDay` (idempotent per date via `LastAccrued`, so accounts can be done individually, spread across the day) and posts what it returns.
 4. **Ledger directions** -- savings apply as `Expense:Interest -> account`; lending as `Income:Interest -> account` (increases the customer obligation).
 
-Still open: configurable `interest_application` period (quarterly/annually), `day_count` conventions beyond actual/365, closed-form multi-day accrual between change events (a month at a time), AER/APR computation, and rate changes mid-period.
+Still open: a quarterly cycle, `day_count` conventions beyond actual/365, closed-form multi-day accrual between change events (a month at a time), AER/APR computation, and rate changes mid-period.

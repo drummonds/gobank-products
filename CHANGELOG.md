@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+ - `Product.NextDay` (gobank ADR-0002 stage 3, story c): the per-account day
+   rule as a pure function — from the account's position at the end of the
+   previous day (go-luca `Position`, balance and accrued interest as an exact
+   fraction) and the day's closing balance to the position at the end of
+   this day and the ledger `Posting`s it calls for. Interest accrues on the
+   closing balance; when the product's cycle ends on the day the whole minor
+   units are applied and the remainder carries forward.
+ - The application cycle is a product parameter, `interest_application`:
+   `daily`, `monthly` (the default, so the catalogue is unchanged) or
+   `annual`. `InterestAccrual` runs `NextDay` at `EndOfDay` and no longer
+   handles `EndOfMonth`; interest application is inside the daily pass.
+   `EndOfMonth` remains for repayment schedules.
+ - `AccountUpdate` on an application day now has `ClosingBalance` and
+   `AccruedNumerator` after application, `InterestAmount` the interest
+   applied, and `AccruedDelta` the day's accrual alone. Callers that derived
+   the applied interest from the cached balance should use `InterestAmount`.
+ - Requires go-luca v0.3.0 (`Position`, `Fraction`) and go-postgres v0.7.0.
  - `Simulation.AdoptAccount`: put an account that already exists in the
    ledger under the engine's management (status, opened date, cached balance
    and parameters as the caller read them) without creating it or raising an

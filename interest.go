@@ -2,7 +2,6 @@ package gbp
 
 import (
 	"fmt"
-	"time"
 
 	luca "git.bytestone.uk/hum3/go-luca"
 )
@@ -13,75 +12,57 @@ import (
 // dividing by this denominator yields minor units. See interest.md.
 const AccrualDenominator = 10_000 * 365
 
-// InterestAccrual accrues interest daily in memory (exact integer arithmetic,
-// no ledger writes and no balance queries) and applies the accumulated
-// interest to the account as a ledger movement at end of month. This follows
-// the recommended UK convention of daily accrual with monthly application.
+// InterestAccrual runs the product's day rule, Product.NextDay, for an
+// account at end of day: the day's accrual on the closing balance, and the
+// application of the accrued interest when the product's cycle ends on
+// that day. There is no separate month-end pass.
 //
-// Accrual for a single account is idempotent per date (guarded by
-// ManagedAccount.LastAccrued), so a caller may accrue accounts individually,
-// spread across the day, instead of concentrating all work at end-of-day —
-// any accounts not yet accrued are picked up by the end-of-day sweep.
+// It is idempotent per date (guarded by ManagedAccount.LastAccrued), so a
+// caller may run accounts individually, spread across the day, instead of
+// concentrating all work at end-of-day — any accounts not yet done are
+// picked up by the end-of-day sweep.
 type InterestAccrual struct{}
 
 func (InterestAccrual) Name() string { return "interest" }
 func (InterestAccrual) Handles() []EventType {
-	return []EventType{EventEndOfDay, EventEndOfMonth}
+	return []EventType{EventEndOfDay}
 }
 
-// HandleEndOfDay accrues one day of interest into the account's accumulator:
-// numerator += cached_balance_minor_units * rate_bps. Pure in-memory integer
-// arithmetic — no rounding, nothing is lost however small the balance.
-func (InterestAccrual) HandleEndOfDay(ctx *SimContext, e EndOfDayEvent) error {
-	accrueAccountDay(e.Account, ctx.AsOfDate)
-	return nil
-}
-
-// accrueAccountDay performs the daily accrual if not already done for date.
-func accrueAccountDay(ma *ManagedAccount, date time.Time) {
-	day := startOfDay(date)
-	if ma.RateBps == 0 || !ma.LastAccrued.Before(day) {
-		return
-	}
-	ma.AccruedNumerator += int64(ma.CachedBalance) * ma.RateBps
-	ma.LastAccrued = day
-}
-
-// HandleEndOfMonth applies accumulated interest to the account: the whole
-// minor units are posted as a ledger movement and the sub-unit remainder
-// carries forward in the accumulator.
+// HandleEndOfDay applies NextDay to the account: postings go to the ledger
+// (which keeps the cached balance in step) and the accrual carries forward
+// in the account's accumulator.
 //
 // Directions follow the ledger's balance convention (balance = in - out):
 //
 //	savings:  Expense:Interest -> account  (bank expense, customer balance up)
 //	lending:  Income:Interest  -> account  (bank income, customer obligation up)
-func (InterestAccrual) HandleEndOfMonth(ctx *SimContext, e EndOfMonthEvent) error {
+func (InterestAccrual) HandleEndOfDay(ctx *SimContext, e EndOfDayEvent) error {
 	ma := e.Account
-	pence := ma.AccruedNumerator / AccrualDenominator
-	if pence == 0 {
+	day := startOfDay(ctx.AsOfDate)
+	if !ma.LastAccrued.Before(day) {
 		return nil
 	}
-
-	var counterPath string
-	if ma.Family == FamilyLending {
-		counterPath = "Income:Interest"
-	} else {
-		counterPath = "Expense:Interest"
+	product, ok := ctx.Sim.products[ma.ProductID]
+	if !ok {
+		return fmt.Errorf("interest: unknown product %q", ma.ProductID)
 	}
-	counterAcct, err := ensureAccount(ctx, counterPath, ma.Account.Commodity, ma.Account.Exponent)
-	if err != nil {
-		return err
+	prev := luca.Position{
+		AccountID: ma.Account.ID,
+		Day:       day.AddDate(0, 0, -1),
+		Accrued:   luca.Fraction{Num: ma.AccruedNumerator, Den: AccrualDenominator},
 	}
-
-	date := ctx.AsOfDate
-	desc := fmt.Sprintf("Interest applied for month ending %s", date.Format("2006-01-02"))
-	valueTime := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, date.Location())
-
-	if _, err := ctx.Sim.RecordMovement(counterAcct.ID, ma.Account.ID, luca.Amount(pence),
-		luca.CodeInterestAccrual, valueTime, desc); err != nil {
-		return err
+	next, postings := product.NextDay(day, prev, ma.CachedBalance, ma.RateBps)
+	for _, p := range postings {
+		counter, err := ensureAccount(ctx, p.Counterparty, ma.Account.Commodity, ma.Account.Exponent)
+		if err != nil {
+			return err
+		}
+		if _, err := ctx.Sim.RecordMovement(counter.ID, ma.Account.ID, p.Amount, p.Code, p.ValueTime, p.Description); err != nil {
+			return err
+		}
 	}
-	ma.AccruedNumerator -= pence * AccrualDenominator
+	ma.AccruedNumerator = next.Accrued.Num
+	ma.LastAccrued = day
 	return nil
 }
 
