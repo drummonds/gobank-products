@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-05
+
+ - Product.Accrue and Product.Apply split the day rule for gobank stage 3 story (e); RateBps exported
+
 ### Added
 - `Product.Accrue` and `Product.Apply`, the two halves of the day rule
   (gobank ADR-0002 stage 3, story e). `Accrue` is the position at the end
