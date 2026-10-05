@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-05
+
+ - Product.NextDay: the day rule as a pure function over go-luca positions; application cycle a product parameter; no separate month-end pass
+
  - `Product.NextDay` (gobank ADR-0002 stage 3, story c): the per-account day
    rule as a pure function — from the account's position at the end of the
    previous day (go-luca `Position`, balance and accrued interest as an exact
