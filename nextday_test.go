@@ -181,3 +181,88 @@ func TestSweepReportsApplicationInTheDailyUpdate(t *testing.T) {
 		}
 	}
 }
+
+// The day rule is two steps the caller may take apart (gobank ADR-0002
+// stage 3, story e): Accrue writes the day's provisional projection as the
+// pass visits the account and as events rewrite it; Apply books the
+// cycle-end application the following morning, once the day's closing
+// balance is final. NextDay remains their composition.
+
+func TestNextDayIsApplyOfAccrue(t *testing.T) {
+	cases := []struct {
+		name    string
+		product *gbp.Product
+		day     time.Time
+		prev    luca.Position
+		closing luca.Amount
+		rate    int64
+	}{
+		{"mid-month savings", gbp.EasyAccess(), utcDay(2026, 1, 15),
+			luca.Position{AccountID: "a", Day: utcDay(2026, 1, 14), Balance: -50000, Accrued: luca.Fraction{Num: -50000 * 150 * 13, Den: gbp.AccrualDenominator}}, -100000, 150},
+		{"month-end savings", gbp.EasyAccess(), utcDay(2026, 1, 31),
+			luca.Position{AccountID: "a", Day: utcDay(2026, 1, 30), Balance: -100000, Accrued: luca.Fraction{Num: -100000 * 150 * 30, Den: gbp.AccrualDenominator}}, -100000, 150},
+		{"month-end loan", gbp.PersonalLoan(), utcDay(2026, 1, 31),
+			luca.Position{AccountID: "l", Day: utcDay(2026, 1, 30), Balance: 100000, Accrued: luca.Fraction{Num: 100000 * 690 * 30, Den: gbp.AccrualDenominator}}, 100000, 690},
+		{"no previous position", gbp.EasyAccess(), utcDay(2026, 1, 31),
+			luca.Position{AccountID: "new"}, -100000, 150},
+	}
+	for _, c := range cases {
+		wantNext, wantPostings := c.product.NextDay(c.day, c.prev, c.closing, c.rate)
+		accrued := c.product.Accrue(c.day, c.prev, c.closing, c.rate)
+		next, postings := c.product.Apply(accrued)
+		if next != wantNext {
+			t.Errorf("%s: Apply(Accrue()) = %+v, NextDay = %+v", c.name, next, wantNext)
+		}
+		if len(postings) != len(wantPostings) || (len(postings) == 1 && postings[0] != wantPostings[0]) {
+			t.Errorf("%s: Apply postings = %+v, NextDay postings = %+v", c.name, postings, wantPostings)
+		}
+	}
+}
+
+func TestAccrueLeavesApplicationToApply(t *testing.T) {
+	day := utcDay(2026, 1, 31)
+	prev := luca.Position{AccountID: "a", Day: day.AddDate(0, 0, -1), Balance: -100000,
+		Accrued: luca.Fraction{Num: -100000 * 150 * 30, Den: gbp.AccrualDenominator}}
+
+	got := gbp.EasyAccess().Accrue(day, prev, -100000, 150)
+
+	want := luca.Position{AccountID: "a", Day: day, Balance: -100000,
+		Accrued: luca.Fraction{Num: -100000 * 150 * 31, Den: gbp.AccrualDenominator}}
+	if got != want {
+		t.Errorf("Accrue on a cycle-end day = %+v, want the full accrual unapplied %+v", got, want)
+	}
+}
+
+// Apply is idempotent: once the whole pence are in the balance only the
+// remainder is left, and applying again finds nothing to post. The pass
+// may therefore revisit an account after a restart without double-booking.
+func TestApplyIsIdempotent(t *testing.T) {
+	pos := luca.Position{AccountID: "a", Day: utcDay(2026, 1, 31), Balance: -100000,
+		Accrued: luca.Fraction{Num: -100000 * 150 * 31, Den: gbp.AccrualDenominator}}
+
+	once, postings := gbp.EasyAccess().Apply(pos)
+	twice, again := gbp.EasyAccess().Apply(once)
+
+	if len(postings) != 1 || postings[0].Amount != -127 {
+		t.Fatalf("first Apply postings = %+v, want one of -127", postings)
+	}
+	if len(again) != 0 || twice != once {
+		t.Errorf("second Apply = %+v with postings %+v, want %+v and none", twice, again, once)
+	}
+	if _, postings := gbp.EasyAccess().Apply(luca.Position{AccountID: "a", Day: utcDay(2026, 1, 15), Accrued: pos.Accrued}); len(postings) != 0 {
+		t.Errorf("Apply mid-cycle posted %+v, want nothing", postings)
+	}
+}
+
+// RateBps is the one conversion from a product's annual rate to the
+// integer basis points the day rule accrues in.
+func TestRateBps(t *testing.T) {
+	for _, c := range []struct {
+		rate float64
+		want int64
+	}{{0.035, 350}, {0.0125, 125}, {0.069, 690}, {0, 0}, {-0.001, -10}} {
+		if got := gbp.RateBps(c.rate); got != c.want {
+			t.Errorf("RateBps(%v) = %d, want %d", c.rate, got, c.want)
+		}
+	}
+}

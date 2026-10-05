@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- `Product.Accrue` and `Product.Apply`, the two halves of the day rule
+  (gobank ADR-0002 stage 3, story e). `Accrue` is the position at the end
+  of a day with the day's interest accrued on the closing balance and
+  nothing applied: pure and the same for any balance, so the daily pass
+  writes it as the day's provisional projection and every event that moves
+  the balance writes it again. `Apply` books the cycle-end application from
+  a position, and applying an applied position posts nothing, so the pass
+  may revisit an account after a restart. `NextDay` is unchanged and is
+  `Apply` of `Accrue`.
+- `RateBps`, the conversion from a product's annual rate to the integer
+  basis points the day rule accrues in, exported from the engine for
+  callers that run the rules without it.
+
 ## [0.2.0] - 2026-10-05
 
  - Product.NextDay: the day rule as a pure function over go-luca positions; application cycle a product parameter; no separate month-end pass

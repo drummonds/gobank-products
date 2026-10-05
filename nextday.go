@@ -1,6 +1,7 @@
 package gbp
 
 import (
+	"math"
 	"time"
 
 	luca "git.bytestone.uk/hum3/go-luca"
@@ -71,25 +72,50 @@ type Posting struct {
 // points, exact), and when the product's cycle ends on this day the whole
 // minor units of the accrual are applied to the balance, the remainder
 // carrying forward. It is pure: the caller posts and stores.
+//
+// It is Apply of Accrue. A caller that projects a day before it is over
+// takes the two apart: Accrue for the provisional position while the day
+// runs, Apply once the closing balance is final.
 func (p *Product) NextDay(day time.Time, prev luca.Position, closing luca.Amount, rateBps int64) (luca.Position, []Posting) {
+	return p.Apply(p.Accrue(day, prev, closing, rateBps))
+}
+
+// Accrue is the first half of the day rule: the position at the end of
+// day with the day's interest on closing accrued (actual/365, in basis
+// points, exact) on top of what prev carried, and nothing applied. It is
+// pure, and the same for any balance the day closes on, so the pass may
+// write it as the day's provisional projection and every event that moves
+// the balance may write it again.
+func (p *Product) Accrue(day time.Time, prev luca.Position, closing luca.Amount, rateBps int64) luca.Position {
 	day = startOfDay(day)
-	numerator := accrualNumerator(prev.Accrued) + int64(closing)*rateBps
-	next := luca.Position{
+	return luca.Position{
 		AccountID: prev.AccountID,
 		Day:       day,
 		Balance:   closing,
-		Accrued:   luca.Fraction{Num: numerator, Den: AccrualDenominator},
+		Accrued:   luca.Fraction{Num: accrualNumerator(prev.Accrued) + int64(closing)*rateBps, Den: AccrualDenominator},
 	}
+}
+
+// Apply is the second half of the day rule: when the product's cycle ends
+// on the position's day, the whole minor units of its accrual move into
+// the balance and the posting that books them is called for, the
+// remainder carrying forward. Otherwise the position is returned as it
+// is. Applying an applied position finds nothing to post, so a caller may
+// apply again (after a restart, say) without booking twice.
+func (p *Product) Apply(pos luca.Position) (luca.Position, []Posting) {
+	day := startOfDay(pos.Day)
 	cycle := p.ApplicationCycle()
 	if !cycle.EndsOn(day) {
-		return next, nil
+		return pos, nil
 	}
+	numerator := accrualNumerator(pos.Accrued)
 	pence := numerator / AccrualDenominator // toward zero; the fraction stays accrued
 	if pence == 0 {
-		return next, nil
+		return pos, nil
 	}
+	next := pos
 	next.Balance += luca.Amount(pence)
-	next.Accrued.Num -= pence * AccrualDenominator
+	next.Accrued = luca.Fraction{Num: numerator - pence*AccrualDenominator, Den: AccrualDenominator}
 	counterparty := "Expense:Interest"
 	if p.Family == FamilyLending {
 		counterparty = "Income:Interest"
@@ -101,6 +127,12 @@ func (p *Product) NextDay(day time.Time, prev luca.Position, closing luca.Amount
 		ValueTime:    time.Date(day.Year(), day.Month(), day.Day(), 23, 59, 59, 0, day.Location()),
 		Description:  cycle.description(day),
 	}}
+}
+
+// RateBps is an annual rate (0.035 for 3.5%) in the integer basis points
+// the day rule accrues in. Rounded, so a negative rate converts too.
+func RateBps(annualRate float64) int64 {
+	return int64(math.Round(annualRate * 10_000))
 }
 
 // accrualNumerator reads a position's accrued interest at

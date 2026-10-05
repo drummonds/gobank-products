@@ -3,7 +3,6 @@ package gbp
 import (
 	"fmt"
 	"io"
-	"math"
 	"time"
 
 	luca "git.bytestone.uk/hum3/go-luca"
@@ -184,7 +183,7 @@ func (s *Simulation) manage(acct *luca.Account, prod *Product, rate float64, sta
 		Family:    prod.Family,
 		Status:    status,
 		OpenedAt:  openedAt,
-		RateBps:   int64(math.Round(rate * 10_000)), // Round handles negative (Japan-style) rates too
+		RateBps:   RateBps(rate),
 	}
 	s.accounts[acct.ID] = ma
 	now := s.Clock.Now()
