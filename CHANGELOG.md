@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-10
+
  - Products as versioned code (gobank ADR-0006, story 1.8.1): the version contract, six v1 packages, the feature framework retired
 
 ### Added
