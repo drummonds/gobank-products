@@ -2,6 +2,8 @@ git.bytestone.uk/hum3/go-luca v0.2.31 h1:McXCGwxJqNNcV1ObyHSfLn0Sw+DhWNfLMQc9SMm
 git.bytestone.uk/hum3/go-luca v0.2.31/go.mod h1:F8VzUWHG1Vm3riiHa4HW9zxQAlcTP3GaKfREwcrAFCs=
 git.bytestone.uk/hum3/go-luca v0.3.0 h1:piN4WVAxdEuS1uiNPkKdYeifT7OXh/CrkkEb2wVng1M=
 git.bytestone.uk/hum3/go-luca v0.3.0/go.mod h1:UjlxIBOe/aR95o/6ndZ2kiZX4+rMa81NRdXy3iN/Lb8=
+git.bytestone.uk/hum3/go-luca v0.5.0 h1:1XWNHnqXDfHjpI9gXxmUSIXp8JGTMY1KDtTypD6swsY=
+git.bytestone.uk/hum3/go-luca v0.5.0/go.mod h1:UjlxIBOe/aR95o/6ndZ2kiZX4+rMa81NRdXy3iN/Lb8=
 git.bytestone.uk/hum3/go-postgres v0.5.5 h1:BKnmpHcGM3r/hmTMw+5jWG8OqGsXvW8YoKBc7PGVHZ0=
 git.bytestone.uk/hum3/go-postgres v0.5.5/go.mod h1:rAg4Pa3KpSTpcrv/takcZ7xlQpZdAKIe6jq5hx8CIUg=
 git.bytestone.uk/hum3/go-postgres v0.7.0 h1:z3j4RlRezOZFK/BbHX2jyGXVNuoVvLrSihTLLM+Tx94=

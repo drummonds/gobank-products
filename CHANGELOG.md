@@ -6,6 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+ - Products as versioned code (gobank ADR-0006, story 1.8.1): the version contract, six v1 packages, the feature framework retired
+
+### Added
+- The product contract: `Version` (identity, declared parameters, rules),
+  nine events (`StartUp`, `Open`, `PrePosting`, `PostPosting`, `Day`,
+  `ParameterChange`, `Command`, `ChangeOfVersion`, `Close`), `Facts` read
+  through an interface, `Intents` (settings, postings, positions) returned,
+  `Refusal` for a rule's no. Rules are pure; the bank's runner carries the
+  intents out.
+- Parameters as declarations with a scope (bank, version, account), a kind
+  (bps, money, int, cycle, day, text), a published value, or a derivation
+  from another parameter (spread, floor, cap). `CheckDeclarations` is the
+  shared start-up check.
+- `gbp.Interest`, the interest-bearing rules a version embeds: daily
+  accrual on the closing balance, application when the cycle ends, the
+  `apply-interest` command, close and change of version applying to date.
+- Six version packages, each with its own golden: `easyaccess/v1`,
+  `fixedterm/v1` (maturity fixed at open from `term_months`, withdrawals
+  refused before it), `isa/v1` (deposits refused over the allowance),
+  `personalloan/v1`, `mortgage/v1`, `overdraft/v1` (movements refused past
+  the limit). The rates the bank held as `float64` are published basis
+  points. The five 32-day goldens are byte-identical to the old framework's.
+- `testkit.Runner`, the reference runner over an in-memory go-luca ledger:
+  implements `Facts`, resolves parameters by scope with effective-dated
+  settings and derivations, carries out intents, surfaces refusals, logs
+  reads. `testkit.CheckVersion`, `testkit.RoundTrip`.
+
+### Changed
+- `Accrue` and `ApplyAccrued` are functions of the engine, not methods of a
+  product; `ApplyAccrued` takes the family and the description and always
+  applies, the version deciding when. `ApplicationCycle.Description` exported.
+- go-luca pinned at v0.5.0.
+
+### Removed
+- `Product`, `Feature` and the handler interfaces, `SimContext`,
+  `Simulation`, `ManagedAccount`, `ParameterStore`, `Clock`, the catalogue
+  constructors (`EasyAccess()` and the rest), `RepaymentSchedule`
+  (`monthly_repayment` was never set by the bank), `NextDay`,
+  `ParamInterestApplication`; testkit's `ScenarioBuilder`, `GolucaScenario`
+  and the FSMs. gobank stays on v0.3.0 until its story 1.8.2 adopts the
+  contract.
+
 ## [0.3.0] - 2026-10-05
 
  - Product.Accrue and Product.Apply split the day rule for gobank stage 3 story (e); RateBps exported

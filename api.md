@@ -1,194 +1,107 @@
-# Simulation API
+# The contract
 
-[Home](index.html) | [Features](features.html) | [Interest](interest.html) | [Products](products.html)
+[Home](index.html) | [Products](products.html) | [Interest](interest.html)
 
-## Core types
+## Version
 
 ```go
-type Simulation struct {
-    Ledger  luca.Ledger      // double-entry ledger (go-luca)
-    Clock   Clock            // wall clock or sim clock
-    Params  *ParameterStore  // time-varying per-account parameters
-}
-
-type SimContext struct {
-    Sim      *Simulation
-    Params   *ParameterStore
-    Clock    Clock
-    AsOfDate time.Time
-}
-
-type ManagedAccount struct {
-    Account   *luca.Account
-    ProductID string
-    Status    AccountStatus   // Pending | Active | PendingClosure | Closed
-    OpenedAt  time.Time
-    ClosedAt  time.Time
+type Version interface {
+    Product() string   // "easy-access"
+    Version() int      // 1, 2, …
+    Name() string
+    Family() ProductFamily
+    Parameters() []Declaration
+    Rules
 }
 ```
 
-## Lifecycle
+A version lives in a package of its own (`easyaccess/v1`) and exports one
+value, `Version`. It is immutable once adopted; a change to the rules is
+a new package. The build carries only the versions the bank has: those on
+sale and those an account runs on. A retired version's postings stay in
+the bank with a record of the version, the event, the parameters read and
+the inputs, and are verified by the arithmetic in this package, never by
+the version's rules.
+
+## Events
+
+| Rule | Fired by the bank when | Reads | Returns |
+|---|---|---|---|
+| `StartUp(p, day)` | the process starts, once per adopted version | the parameters as resolvable on day | an error stops the bank |
+| `Open(f)` | an account opens on the version | the open day, the parameters | account settings, the first position |
+| `PrePosting(f, m)` | before a movement posts | the movement, the position, the parameters | nil to allow; a `*Refusal` to refuse |
+| `PostPosting(f, m)` | after the movement posted | the balance as it now stands | the day's position |
+| `Day(f)` | the start-of-day pass visits the account | yesterday's position, the balance, parameters for both days | yesterday closed with its postings, today's position |
+| `ParameterChange(f, c)` | a setting the version reads becomes effective | old and new value | nothing, or postings |
+| `Command(f, name)` | the console runs one of `Commands()` | the position | postings, the position |
+| `ChangeOfVersion(f, to)` | the account moves to another version | the position | the outgoing version's closing postings |
+| `Close(f)` | the account closes | the position | the final postings |
+
+Every rule is pure: the same facts give the same intents, so the runner
+may run a rule again after a restart, or after an event that followed the
+pass, and the last answer is the right one.
+
+## Facts and intents
 
 ```go
-// Create engine with a ledger and clock.
-sim, err := gbp.NewSimulation(ledger, clock)
-
-// Register products before opening accounts.
-sim.RegisterProduct(gbp.EasyAccess())
-sim.RegisterProduct(gbp.FixedTerm())
-
-// Open an account -- fires AccountOpened through the feature chain.
-ma, err := sim.OpenAccount("easy-access", "Liability:Savings:alice", "GBP", -2, nil)
-
-// Customer actions -- fire events through the feature chain.
-err = sim.Deposit(ma.Account.ID, 100000, equityID, luca.CodeBookTransfer)
-err = sim.Withdraw(ma.Account.ID, 50000, equityID, luca.CodeBookTransfer)
-
-// Advance time -- fires EndOfDay (and EndOfMonth at boundaries) for all active accounts.
-updates, err := sim.AdvanceToDate(targetDate)
-
-// Close -- fires AccountClosed.
-err = sim.CloseAccount(ma.Account.ID)
-
-// Export ledger to .goluca format.
-err = sim.ExportGoluca(w)
-```
-
-## Parameter store
-
-Parameters are time-varying key-value pairs per account. Products set defaults at registration time; account-specific overrides are applied at opening. Features read parameters via `SimContext.Params`.
-
-```go
-// Set (internal -- called by Simulation during OpenAccount)
-store.Set(accountID, "annual_rate", "0.035", effectiveAt)
-
-// Read (used by features)
-value, ok := ctx.Params.Get(accountID, "maturity_date", ctx.AsOfDate)
-rate, err := ctx.Params.GetFloat64(accountID, "annual_rate", ctx.AsOfDate)
-```
-
-Parameters can be updated over time -- the store returns the most recent value effective at or before the query date.
-
-### Standard parameters
-
-| Parameter | Type | Used by | Description |
-|-----------|------|---------|-------------|
-| `annual_rate` | float64 | InterestAccrual | Annual interest rate (e.g. `0.015` for 1.5%) |
-| `maturity_date` | date string | TermLock | Lock-up expiry date (format `2006-01-02`) |
-| `isa_allowance` | int (minor units) | ISAWrapper | Annual deposit cap (default £20,000 = `2000000`) |
-| `isa_deposited` | int (minor units) | ISAWrapper | Running total of deposits in current year |
-| `monthly_repayment` | int (minor units) | RepaymentSchedule | Monthly repayment amount |
-| `repayment_source` | account path | RepaymentSchedule | Ledger account to draw repayments from |
-| `overdraft_limit` | int (minor units) | OverdraftFacility | Maximum negative balance (default £1,000 = `100000`) |
-
-## Clock
-
-```go
-type Clock interface {
-    Now() time.Time
+type Facts interface {
+    Parameter(key string, day time.Time) (Param, error)
+    Account() string
+    Day() time.Time
+    Position(day time.Time) (luca.Position, bool)
+    Balance() luca.Amount
 }
 
-// Production: WallClock{}
-// Testing:    NewSimClock(startDate) -- with SetDate() and Advance()
-```
-
-## Daily updates
-
-`AdvanceToDate` returns `[]DailyUpdate` -- one per processed day, each containing per-account opening/closing balances and interest amounts.
-
-```go
-type DailyUpdate struct {
-    Date     time.Time
-    Accounts []AccountUpdate
+type Movement struct {
+    Delta       luca.Amount // the change to the balance, signed as the balance is
+    Code, Description string
+    ValueTime   time.Time
 }
 
-type AccountUpdate struct {
-    Account        *ManagedAccount
-    Date           time.Time
-    OpeningBalance luca.Amount
-    ClosingBalance luca.Amount
-    InterestAmount luca.Amount
-    Exponent       int
+type Intents struct {
+    Settings  []Setting       // account-scoped parameters to write
+    Postings  []Posting       // counterparty -> account, signed as the balance is
+    Positions []luca.Position // to project
 }
 ```
 
----
+A refusal is `gbp.Refuse("reason")`; the runner tells it from a fault with
+`gbp.IsRefusal`.
 
-## Building a new product
-
-### 1. Define the feature chain
-
-A product is a list of features with default parameters. Feature order matters -- features earlier in the list run first and can reject events before later features see them.
+## Parameters
 
 ```go
-func MyProduct() *Product {
-    return &Product{
-        ID:     "my-product",
-        Name:   "My Product",
-        Family: FamilySavings, // or FamilyLending
-        Features: []Feature{
-            StatusLifecycle{},     // always first
-            DepositAcceptance{},   // validates and records deposits
-            WithdrawalProcessing{},// validates and records withdrawals
-            InterestAccrual{},     // daily interest -- usually last
-        },
-        Defaults: map[string]string{
-            "annual_rate": "0.025",
-        },
-    }
+type Declaration struct {
+    Key       string
+    Scope     Scope       // bank | version | account
+    Kind      Kind        // bps | money | int | cycle | day | text
+    Published string      // the value at adoption (version scope)
+    Derived   *Derivation // Source, SpreadBps, Floor, Cap
 }
 ```
 
-### 2. Writing a custom feature
+The runner resolves a parameter for a day (gobank ADR-0006, parameter
+resolution): a derived parameter from its source and the formula; a
+declared one from the latest setting effective on or before the day at its
+scope, or, at version scope, from the published value. A setting effective
+after the day is invisible to it, which is how a future rate change is
+decided today and takes effect on its day with nothing to do.
 
-Implement `Feature` and one or more typed handler interfaces.
+`gbp.Interest` is the interest-bearing account's rules, which a version
+embeds and overrides where its product differs. `gbp.CheckDeclarations`
+is the start-up check every version shares.
 
-```go
-type MyFeature struct{}
-
-func (MyFeature) Name() string          { return "my_feature" }
-func (MyFeature) Handles() []EventType  { return []EventType{EventDepositReceived} }
-
-func (MyFeature) HandleDepositReceived(ctx *SimContext, e DepositReceivedEvent) error {
-    // Validate, modify, or record.
-    // Return error to reject and stop dispatch.
-    return nil
-}
-```
-
-### 3. Testing
-
-Use the `testkit.ScenarioBuilder` for unit tests and `testkit.GolucaScenario` for golden-file regression tests.
+## Testing a version
 
 ```go
-// Unit test
-testkit.NewScenario(t).
-    WithProduct(MyProduct()).
-    OpenAccount("my-product", "Liability:Savings:test").
-    Deposit("Liability:Savings:test", 100000).
-    AdvanceDays(30).
-    AssertBalanceRange("Liability:Savings:test", 100050, 100100)
-
-// Golden-file test
-scenario := testkit.GolucaScenario{
-    Name:    "my_product_30d",
-    Product: MyProduct(),
-    Account: testkit.AccountSpec{Path: "Liability:Savings:test"},
-    Actions: []testkit.Action{
-        testkit.Deposit(100000),
-        testkit.AdvanceDays(30),
-    },
-}
-scenario.RunGolden(t)  // compare against testdata/my_product_30d.goluca
+r := testkit.Open(t, easyaccess.Version, "Liability:Savings:alice", day)
+r.Deposit(100000)
+r.Advance(32)
+testkit.Golden(t, "easy_access_32d", r.Export())
 ```
 
----
-
-## External payments
-
-Customer-initiated events (`DepositReceived`, `WithdrawalRequested`) currently execute as instantaneous book transfers. There is no concept of payment initiation, asynchronous settlement, payment failure, or reconciliation.
-
-In production, deposits arrive as inbound FPS credits and withdrawals are outbound FPS debits. The full payment lifecycle belongs in [mock-fps](https://git.bytestone.uk/hum3/mock-fps), not in gobank-products. The boundary is:
-
-- **gobank-products**: product rules, interest, lifecycle, ledger movements (assumes payments succeed)
-- **mock-fps**: payment scheme simulation, failure modes, async settlement, reconciliation
+`testkit.Runner` is the reference runner: it implements `Facts` over an
+in-memory go-luca ledger and settings by scope, carries out every intent,
+surfaces refusals from `TryDeposit` and `TryWithdraw`, and logs the
+parameters each rule read in `Reads`. `testkit.CheckVersion` asserts a
+version's identity and declarations. `GOLDEN_UPDATE=1` rewrites a golden.

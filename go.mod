@@ -3,7 +3,7 @@ module git.bytestone.uk/hum3/gobank-products
 go 1.26.0
 
 require (
-	git.bytestone.uk/hum3/go-luca v0.3.0
+	git.bytestone.uk/hum3/go-luca v0.5.0
 	git.bytestone.uk/hum3/go-postgres v0.7.0
 	github.com/shopspring/decimal v1.4.0
 )

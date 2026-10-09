@@ -1,53 +1,39 @@
 # gobank-products
 
-Composable banking product library for Go. Products are built from independently testable **features** driven by a **simulation engine** with controllable time and typed events.
+The product contract of gobank, and the products that implement it
+(gobank ADR-0006). A product version is a Go package that declares the
+parameters its rules read and answers a fixed set of events with intents.
+A version is immutable once the bank has adopted it: a change to the
+rules is a new package; a change to a value is a setting.
 
 ## Pages
 
-- [Features](features.html) -- composable building blocks and their permitted events
-- [Products](products.html) -- product catalog, event dispatch matrix, and golden goluca files
-- [Interest Accrual](interest.html) -- accrual vs application periods, AER, APR, and product recommendations
-- [API](api.html) -- simulation engine, parameter store, clock, and extension points
+- [Contract](api.html) -- version, events, facts, intents, parameters
+- [Products](products.html) -- the versions and their parameters
+- [Interest](interest.html) -- the accrual arithmetic every version shares
 - [Changelog](CHANGELOG.html)
 - [Roadmap](ROADMAP.html)
 
-## Product Catalog
-
-### Savings
-
-| Product | Default Rate | Features |
-|---------|-------------|----------|
-| [Easy Access](products.html#easy-access) | 1.5% | Deposit, Withdrawal, Interest, Lifecycle |
-| [Fixed Term](products.html#fixed-term) | 4.0% | Deposit, Term Lock, Withdrawal, Interest, Lifecycle |
-| [ISA](products.html#isa) | 3.5% | ISA Allowance, Deposit, Withdrawal, Interest, Lifecycle |
-
-### Lending
-
-| Product | Default Rate | Features |
-|---------|-------------|----------|
-| [Personal Loan](products.html#personal-loan) | 6.9% | Deposit, Interest, Repayment, Lifecycle |
-| [Mortgage](products.html#mortgage) | 4.5% | Deposit, Interest, Repayment, Lifecycle |
-| [Overdraft](products.html#overdraft) | 15.9% | Deposit, Overdraft Facility, Interest, Lifecycle |
-
-## Architecture
+## How a version runs
 
 ```
-Product = [Feature, Feature, ...]
-    | RegisterProduct
+bank event (open, posting, day, command, close)
+    |
     v
-Simulation builds dispatch table: EventType -> []Feature
-    | Event occurs (deposit, EOD, etc.)
+runner: resolves the account's version and its parameters,
+        gathers facts (positions, balance, the movement)
+    |
     v
-Features called in order -> first error stops dispatch
-    | Features interact with
+version.Rule(facts) -> intents (settings, postings, positions) or a refusal
+    |
     v
-SimContext: Simulation, ParameterStore, Clock, AsOfDate
-    | Features record via
-    v
-Ledger (go-luca): double-entry movements, interest calculation
+runner: carries the intents out under the account's lock,
+        records the parameters the rule read against its postings
 ```
 
-Products are pure data -- a name, family, list of features, and default parameters. Features are stateless handlers. All state lives in the ledger (balances, movements) and the parameter store (rates, dates, limits).
+Rules are pure, so a version tests with a golden `.goluca` file and no
+database, and the bank may run a rule again for the same facts (after a
+restart, after an event that followed the pass) and get the same answer.
 
 ## Links
 

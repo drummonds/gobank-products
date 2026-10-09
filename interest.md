@@ -1,6 +1,6 @@
 # Interest Accrual
 
-[Home](index.html) | [Features](features.html) | [Products](products.html) | [API](api.html)
+[Home](index.html) | [Contract](api.html) | [Products](products.html)
 
 Interest handling has two distinct phases: **accrual** (calculating how much interest has accumulated) and **application** (crediting or debiting that interest to the account). These can happen on different schedules and at different precisions.
 

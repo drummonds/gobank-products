@@ -1,0 +1,79 @@
+commodity GBP
+
+2026-01-01%2026-10-09T23:15:09.992537029Z * Deposit
+  Liability:Savings:fixed → Asset:Cash 5000 GBP
+
+2026-01-31T23:59:59Z%2026-10-09T23:15:10.033662516Z * Interest applied for month ending 2026-01-31
+  Expense:Interest → Liability:Savings:fixed -16.98 GBP
+
+2026-02-28T23:59:59Z%2026-10-09T23:15:10.072788305Z * Interest applied for month ending 2026-02-28
+  Expense:Interest → Liability:Savings:fixed -15.4 GBP
+
+2026-03-31T23:59:59Z%2026-10-09T23:15:10.110914059Z * Interest applied for month ending 2026-03-31
+  Expense:Interest → Liability:Savings:fixed -17.09 GBP
+
+2026-04-30T23:59:59Z%2026-10-09T23:15:10.146071898Z * Interest applied for month ending 2026-04-30
+  Expense:Interest → Liability:Savings:fixed -16.6 GBP
+
+2026-05-31T23:59:59Z%2026-10-09T23:15:10.189088781Z * Interest applied for month ending 2026-05-31
+  Expense:Interest → Liability:Savings:fixed -17.21 GBP
+
+2026-06-30T23:59:59Z%2026-10-09T23:15:10.229355660Z * Interest applied for month ending 2026-06-30
+  Expense:Interest → Liability:Savings:fixed -16.72 GBP
+
+2026-07-31T23:59:59Z%2026-10-09T23:15:10.271888711Z * Interest applied for month ending 2026-07-31
+  Expense:Interest → Liability:Savings:fixed -17.32 GBP
+
+2026-08-31T23:59:59Z%2026-10-09T23:15:10.310873203Z * Interest applied for month ending 2026-08-31
+  Expense:Interest → Liability:Savings:fixed -17.39 GBP
+
+2026-09-30T23:59:59Z%2026-10-09T23:15:10.347994153Z * Interest applied for month ending 2026-09-30
+  Expense:Interest → Liability:Savings:fixed -16.88 GBP
+
+2026-10-31T23:59:59Z%2026-10-09T23:15:10.388651869Z * Interest applied for month ending 2026-10-31
+  Expense:Interest → Liability:Savings:fixed -17.5 GBP
+
+2026-11-30T23:59:59Z%2026-10-09T23:15:10.430383659Z * Interest applied for month ending 2026-11-30
+  Expense:Interest → Liability:Savings:fixed -16.99 GBP
+
+2026-12-31T23:59:59Z%2026-10-09T23:15:10.463689127Z * Interest applied for month ending 2026-12-31
+  Expense:Interest → Liability:Savings:fixed -17.62 GBP
+
+2027-01-31T23:59:59Z%2026-10-09T23:15:10.494649464Z * Interest applied for month ending 2027-01-31
+  Expense:Interest → Liability:Savings:fixed -17.68 GBP
+
+2027-02-28T23:59:59Z%2026-10-09T23:15:10.523473365Z * Interest applied for month ending 2027-02-28
+  Expense:Interest → Liability:Savings:fixed -16.02 GBP
+
+2027-03-31T23:59:59Z%2026-10-09T23:15:10.551297030Z * Interest applied for month ending 2027-03-31
+  Expense:Interest → Liability:Savings:fixed -17.8 GBP
+
+2027-04-30T23:59:59Z%2026-10-09T23:15:10.577266500Z * Interest applied for month ending 2027-04-30
+  Expense:Interest → Liability:Savings:fixed -17.27 GBP
+
+2027-05-31T23:59:59Z%2026-10-09T23:15:10.602354789Z * Interest applied for month ending 2027-05-31
+  Expense:Interest → Liability:Savings:fixed -17.91 GBP
+
+2027-06-30T23:59:59Z%2026-10-09T23:15:10.632730875Z * Interest applied for month ending 2027-06-30
+  Expense:Interest → Liability:Savings:fixed -17.4 GBP
+
+2027-07-31T23:59:59Z%2026-10-09T23:15:10.662623851Z * Interest applied for month ending 2027-07-31
+  Expense:Interest → Liability:Savings:fixed -18.03 GBP
+
+2027-08-31T23:59:59Z%2026-10-09T23:15:10.688267016Z * Interest applied for month ending 2027-08-31
+  Expense:Interest → Liability:Savings:fixed -18.09 GBP
+
+2027-09-30T23:59:59Z%2026-10-09T23:15:10.712113474Z * Interest applied for month ending 2027-09-30
+  Expense:Interest → Liability:Savings:fixed -17.57 GBP
+
+2027-10-31T23:59:59Z%2026-10-09T23:15:10.739912072Z * Interest applied for month ending 2027-10-31
+  Expense:Interest → Liability:Savings:fixed -18.22 GBP
+
+2027-11-30T23:59:59Z%2026-10-09T23:15:10.767576747Z * Interest applied for month ending 2027-11-30
+  Expense:Interest → Liability:Savings:fixed -17.68 GBP
+
+2027-12-31T23:59:59Z%2026-10-09T23:15:10.794082378Z * Interest applied for month ending 2027-12-31
+  Expense:Interest → Liability:Savings:fixed -18.34 GBP
+
+2028-01-02%2026-10-09T23:15:10.795922877Z * Withdrawal
+  Asset:Cash → Liability:Savings:fixed 5000 GBP
