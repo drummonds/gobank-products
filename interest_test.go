@@ -188,3 +188,74 @@ func TestRefusalIsTold(t *testing.T) {
 		t.Error("a fault is not a refusal")
 	}
 }
+
+// A rate of zero accrues nothing, and nothing is applied at the cycle end:
+// no posting, no closed position, only the day's.
+func TestInterestZeroRateAccruesAndAppliesNothing(t *testing.T) {
+	f := newFacts(utcDay(2026, 2, 1))
+	f.params["rate_bps"] = gbp.Param{Key: "rate_bps", Kind: gbp.KindBps, Text: "0"}
+	f.balance = -100000
+	f.positions[utcDay(2026, 1, 31)] = luca.Position{AccountID: "acct", Day: utcDay(2026, 1, 31), Balance: -100000,
+		Accrued: luca.Fraction{Num: 0, Den: gbp.AccrualDenominator}}
+
+	in, err := savings.Day(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(in.Postings) != 0 || len(in.Positions) != 1 {
+		t.Fatalf("intents = %+v, want no posting and today's position only", in)
+	}
+	if p := in.Positions[0]; p.Day != utcDay(2026, 2, 1) || p.Balance != -100000 || p.Accrued.Num != 0 {
+		t.Errorf("today = %+v, want nothing accrued", p)
+	}
+}
+
+// The day is the UTC day of the instant the runner gives (go-luca's issue
+// #1: a time near midnight in another zone is a different UTC day). The
+// rule's positions and postings are in UTC days, so what it finds and
+// what it writes agree with a ledger that keys positions by UTC midnight.
+func TestInterestDayInAnotherZoneIsTheUTCDay(t *testing.T) {
+	bst := time.FixedZone("BST", 60*60)
+	position := luca.Position{AccountID: "acct", Day: utcDay(2026, 1, 31), Balance: -100000,
+		Accrued: luca.Fraction{Num: -100000 * 150 * 31, Den: gbp.AccrualDenominator}}
+
+	utc := newFacts(utcDay(2026, 2, 1))
+	utc.balance = -100000
+	utc.positions[utcDay(2026, 1, 31)] = position
+	want, err := savings.Day(utc)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 00:30 BST on 2 February is 23:30 UTC on 1 February: the 1 February day.
+	local := newFacts(time.Date(2026, 2, 2, 0, 30, 0, 0, bst))
+	local.balance = -100000
+	local.positions[utcDay(2026, 1, 31)] = position
+	got, err := savings.Day(local)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(got.Postings) != 1 || got.Postings[0] != want.Postings[0] {
+		t.Errorf("postings = %+v, want %+v: the January application, value-dated 23:59:59 UTC", got.Postings, want.Postings)
+	}
+	if len(got.Positions) != 2 || got.Positions[0] != want.Positions[0] || got.Positions[1] != want.Positions[1] {
+		t.Errorf("positions = %+v, want %+v: UTC days", got.Positions, want.Positions)
+	}
+}
+
+// BenchmarkInterestDay is the day rule's cost per account, the facts in
+// memory: the arithmetic alone, the ledger's reads and writes being the
+// runner's.
+func BenchmarkInterestDay(b *testing.B) {
+	f := newFacts(utcDay(2026, 1, 15))
+	f.balance = -100000
+	f.positions[utcDay(2026, 1, 14)] = luca.Position{AccountID: "acct", Day: utcDay(2026, 1, 14), Balance: -100000,
+		Accrued: luca.Fraction{Num: -100000 * 150 * 14, Den: gbp.AccrualDenominator}}
+	b.ReportAllocs()
+	for b.Loop() {
+		if _, err := savings.Day(f); err != nil {
+			b.Fatal(err)
+		}
+	}
+}

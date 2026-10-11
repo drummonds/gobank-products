@@ -113,6 +113,10 @@ func accrualNumerator(f luca.Fraction) int64 {
 	return f.Num * AccrualDenominator / f.Den
 }
 
+// startOfDay is the UTC day an instant falls in, at midnight: a day is a
+// UTC day (Facts.Day, go-luca's Position.Day), so a time near midnight in
+// another zone is read as the UTC day it is, not the local date.
 func startOfDay(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	t = t.UTC()
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 }

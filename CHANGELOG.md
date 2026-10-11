@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- The day rule read a day in the zone it was given, so a runner handing an
+  instant near midnight in another zone got positions keyed by a local
+  midnight no UTC-keyed ledger would find, and a value time at the local
+  day's end. A day is a UTC day (`Facts.Day`, go-luca's `Position.Day`):
+  the rule now reads the UTC day of any instant it is given (issue #2,
+  go-luca's cross-timezone regression).
+
+### Added
+- Tests ported from go-luca's retired interest suite (issue #2): a zero rate
+  accrues and applies nothing; the cross-timezone day; `BenchmarkInterestDay`,
+  the rule's cost per account-day with the facts in memory.
+
 ## [0.7.0] - 2026-10-11
 
 ### Fixed
