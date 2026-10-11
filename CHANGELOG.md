@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-11
+
 ### Fixed
 - `overdraft/v1` read overdrawn as a negative balance and refused past
   `-limit`. In the bank's view (gobank ADR-0008) an overdrawn current
