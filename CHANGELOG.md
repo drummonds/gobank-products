@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- `overdraft/v1` read overdrawn as a negative balance and refused past
+  `-limit`. In the bank's view (gobank ADR-0008) an overdrawn current
+  account is a debit balance, positive like a loan, so the limit is the
+  most the balance may rise to. Its golden was the customer's way about:
+  the withdrawal credited the account and the interest ran from the
+  account to `Income:Interest`. Regenerated (issue #1).
+
+### Changed
+- `testkit.Runner` posts in the bank's view whatever the family: `Deposit`
+  credits the account and `Withdraw` debits it; `Drawdown` and `Repay` are
+  the lending verbs. Lending tests that funded a loan with `Deposit` now
+  draw it down, and their goldens say so.
+
 ### Added
 - `ScopeMarket` and `RiskFreeRateKey`: a currency's official risk-free
   rate as a parameter at a scope of its own (gobank ADR-0009), declared

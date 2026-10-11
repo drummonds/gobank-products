@@ -90,6 +90,12 @@ func (r *Runner) Day() time.Time { return r.day }
 // AccountID is the ledger account's ID.
 func (r *Runner) AccountID() string { return r.account.ID }
 
+// The runner posts in the bank's view (gobank ADR-0008): a movement is
+// from the account credited to the account debited, so money the customer
+// pays in credits the account and money they take out debits it, whatever
+// the family. A savings balance runs negative, a loan positive, and a
+// current account drawn past zero positive: overdrawn.
+
 // Deposit pays amount into the account on the runner's day, or fails the test.
 func (r *Runner) Deposit(amount luca.Amount) {
 	r.t.Helper()
@@ -106,20 +112,32 @@ func (r *Runner) Withdraw(amount luca.Amount) {
 	}
 }
 
+// Drawdown lends amount from the account on the runner's day, or fails
+// the test: a debit, like a withdrawal.
+func (r *Runner) Drawdown(amount luca.Amount) {
+	r.t.Helper()
+	if err := r.post(r.cash, r.account, amount, "Drawdown"); err != nil {
+		r.t.Fatal(err)
+	}
+}
+
+// Repay pays amount off the account on the runner's day, or fails the
+// test: a credit, like a deposit.
+func (r *Runner) Repay(amount luca.Amount) {
+	r.t.Helper()
+	if err := r.post(r.account, r.cash, amount, "Repayment"); err != nil {
+		r.t.Fatal(err)
+	}
+}
+
 // TryDeposit is Deposit returning the rule's refusal, if any.
 func (r *Runner) TryDeposit(amount luca.Amount) error {
-	if r.version.Family() == gbp.FamilySavings {
-		return r.post(r.account, r.cash, amount, "Deposit")
-	}
-	return r.post(r.cash, r.account, amount, "Deposit")
+	return r.post(r.account, r.cash, amount, "Deposit")
 }
 
 // TryWithdraw is Withdraw returning the rule's refusal, if any.
 func (r *Runner) TryWithdraw(amount luca.Amount) error {
-	if r.version.Family() == gbp.FamilySavings {
-		return r.post(r.cash, r.account, amount, "Withdrawal")
-	}
-	return r.post(r.account, r.cash, amount, "Withdrawal")
+	return r.post(r.cash, r.account, amount, "Withdrawal")
 }
 
 // post asks the version, posts, then runs its post-posting rule.

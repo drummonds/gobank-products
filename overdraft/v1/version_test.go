@@ -16,6 +16,9 @@ func TestVersion(t *testing.T) { testkit.CheckVersion(t, overdraft.Version, "ove
 func TestDrawingPastTheLimitIsRefused(t *testing.T) {
 	r := testkit.Open(t, overdraft.Version, "Liability:Current:alice", day(2026, 1, 1))
 	r.Withdraw(100000) // to the limit
+	if r.Balance() != 100000 {
+		t.Errorf("balance drawn to the limit = %d, want 100000: overdrawn is a debit balance (gobank ADR-0008)", r.Balance())
+	}
 	if err := r.TryWithdraw(1); !gbp.IsRefusal(err) {
 		t.Errorf("a penny past the limit: %v, want a refusal", err)
 	}

@@ -23,14 +23,17 @@ func (version) Parameters() []gbp.Declaration {
 	}
 }
 
-// PrePosting refuses a movement that would take the balance past the limit.
+// PrePosting refuses a movement that would draw the account past the
+// limit. The ledger is the bank's view (gobank ADR-0008): a current
+// account in credit is a liability and negative, overdrawn a debit
+// balance and positive, so the limit is the most the balance may rise to.
 func (version) PrePosting(f gbp.Facts, m gbp.Movement) error {
 	limit, err := f.Parameter("limit", f.Day())
 	if err != nil {
 		return err
 	}
-	if after := f.Balance() + m.Delta; after < -limit.Money() {
-		return gbp.Refuse("overdraft limit exceeded: balance %d less %d would breach the limit of %d", f.Balance(), -m.Delta, limit.Money())
+	if after := f.Balance() + m.Delta; after > limit.Money() {
+		return gbp.Refuse("overdraft limit exceeded: balance %d drawn by %d would breach the limit of %d", f.Balance(), m.Delta, limit.Money())
 	}
 	return nil
 }

@@ -1,7 +1,7 @@
 commodity GBP
 
-2026-01-01%2026-08-26T11:00:38Z * Withdrawal
-  Liability:Current:alice → Asset:Cash 500 GBP
+2026-01-01%2026-10-11T12:22:04.127076461Z * Withdrawal
+  Asset:Cash → Liability:Current:alice 500 GBP
 
-2026-01-31T23:59:59Z%2026-08-26T11:00:38Z * Interest applied for month ending 2026-01-31
-  Income:Interest → Liability:Current:alice -6.75 GBP
+2026-01-31T23:59:59Z%2026-10-11T12:22:04.157065716Z * Interest applied for month ending 2026-01-31
+  Income:Interest → Liability:Current:alice 6.75 GBP

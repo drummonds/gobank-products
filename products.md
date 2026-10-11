@@ -35,7 +35,7 @@ version. A rule here is code, and a change to it is a new version.
 | `isa/v1` | open | writes `deposited` = 0 |
 | `isa/v1` | pre-posting | refuses a deposit that would take `deposited` over `allowance`; a withdrawal does not restore it |
 | `isa/v1` | post-posting | adds a deposit to `deposited` |
-| `overdraft/v1` | pre-posting | refuses a movement that would take the balance below `-limit` |
+| `overdraft/v1` | pre-posting | refuses a movement that would take the balance above `limit`: overdrawn is a debit balance |
 
 Every version otherwise runs `gbp.Interest`: interest accrues daily on
 the closing balance at `rate_bps`, actual/365, exact; when the `cycle`
@@ -45,7 +45,14 @@ close and change of version apply the accrual to date.
 
 ## Goldens
 
-Each version's package holds its golden `.goluca` files under `testdata`.
-The five 32-day goldens are byte-identical to the ones the retired
-feature framework produced, which is how v1 is known to reproduce the
-behaviour the bank ran before.
+Each version's package holds its golden `.goluca` files under `testdata`,
+posted in the bank's view (gobank ADR-0008): a movement is from the
+account credited to the account debited. A deposit is from the customer's
+account to `Asset:Cash` and a withdrawal or drawdown the other way about,
+so a savings balance runs negative and a loan positive; a current account
+drawn past zero runs positive, overdrawn. Interest applied is a posting
+from `Expense:Interest` of a negative amount for savings and from
+`Income:Interest` of a positive one for lending. The savings goldens are
+byte-identical to the ones the retired feature framework produced; the
+lending goldens were regenerated in the bank's view, the framework's
+overdraft having run the customer's way.

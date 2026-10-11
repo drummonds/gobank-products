@@ -14,7 +14,7 @@ func TestVersion(t *testing.T) { testkit.CheckVersion(t, personalloan.Version, "
 // applied at the month end.
 func TestGolden32Days(t *testing.T) {
 	r := testkit.Open(t, personalloan.Version, "Asset:Loans:alice", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC))
-	r.Deposit(500000)
+	r.Drawdown(500000)
 	r.Advance(32)
 	testkit.Golden(t, "personal_loan_32d", r.Export())
 	testkit.RoundTrip(t, r.Export())

@@ -14,7 +14,7 @@ A savings account is a bank liability -- the bank owes the customer. When a cust
 Customer Liability -> Cash
 ```
 
-The customer's liability account is debited (increasing the bank's obligation) and cash is credited. The golden files should reflect this direction.
+The customer's account is credited (the bank's obligation grows, so a savings balance runs negative in the ledger) and cash is debited: the bank's view, gobank ADR-0008. The goldens are in this direction.
 
 ### Interest
 
@@ -26,7 +26,7 @@ Interest on a savings account is a cost to the bank. When interest is applied:
 
 This is a negative movement from the expense account to the customer liability account -- the bank recognises the expense and the customer's balance increases.
 
-For lending products the direction is reversed -- interest is income to the bank and increases the customer's obligation.
+For lending products the direction is reversed -- interest is income to the bank and increases the customer's obligation, a positive amount from `Income:Interest` to the account. An overdrawn current account is lending: drawn past zero it runs positive, like a loan.
 
 ## Accrual precision
 

@@ -137,3 +137,45 @@ func TestRunnerSurfacesRefusals(t *testing.T) {
 		t.Errorf("a refused movement posted: balance %d", r.Balance())
 	}
 }
+
+// lender is a test version of the lending family.
+type lender struct{ gbp.Interest }
+
+func newLender() lender {
+	return lender{gbp.Interest{Family: gbp.FamilyLending, RateKey: "rate_bps", CycleKey: "cycle"}}
+}
+
+func (lender) Product() string           { return "lender" }
+func (lender) Version() int              { return 1 }
+func (lender) Name() string              { return "Lender" }
+func (lender) Family() gbp.ProductFamily { return gbp.FamilyLending }
+func (lender) Parameters() []gbp.Declaration {
+	return []gbp.Declaration{
+		{Key: "rate_bps", Scope: gbp.ScopeVersion, Kind: gbp.KindBps, Published: "690"},
+		{Key: "cycle", Scope: gbp.ScopeVersion, Kind: gbp.KindCycle, Published: "monthly"},
+	}
+}
+
+// The runner posts in the bank's view (gobank ADR-0008) whatever the
+// family: money the customer pays in credits the account, money the
+// customer takes out debits it. A drawdown is a debit and a repayment a
+// credit, so a loan runs positive; a savings deposit runs negative; and a
+// current account drawn past zero runs positive, overdrawn.
+func TestRunnerPostsInTheBanksView(t *testing.T) {
+	loan := testkit.Open(t, newLender(), "Asset:Loans:bob", day(2026, 1, 1))
+	loan.Drawdown(80000)
+	if loan.Balance() != 80000 {
+		t.Errorf("loan after drawdown = %d, want 80000: a debit", loan.Balance())
+	}
+	loan.Repay(30000)
+	if loan.Balance() != 50000 {
+		t.Errorf("loan after repayment = %d, want 50000", loan.Balance())
+	}
+
+	current := testkit.Open(t, newLender(), "Liability:Current:bob", day(2026, 1, 1))
+	current.Deposit(10000)
+	current.Withdraw(15000)
+	if current.Balance() != 5000 {
+		t.Errorf("current account after withdrawal = %d, want 5000: overdrawn is a debit balance", current.Balance())
+	}
+}
