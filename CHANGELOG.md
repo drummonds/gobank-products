@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- `ScopeMarket` and `RiskFreeRateKey`: a currency's official risk-free
+  rate as a parameter at a scope of its own (gobank ADR-0009), declared
+  by key alone and resolved by the runner for the currency of the product
+  whose rules read it; written only by the market's feed.
+
 ## [0.6.0] - 2026-10-10
 
 ## [0.5.0] - 2026-10-10

@@ -76,6 +76,7 @@ type Declaration struct {
     Scope     Scope       // bank | version | account
     Kind      Kind        // bps | money | int | cycle | day | text
     Published string      // the value at adoption (version scope)
+                          // scope: market (owner the currency; key RiskFreeRateKey), bank, version, account
     Derived   *Derivation // Source, SpreadBps, Floor, Cap
 }
 ```

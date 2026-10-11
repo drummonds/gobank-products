@@ -13,10 +13,17 @@ import (
 type Scope string
 
 const (
-	ScopeBank    Scope = "bank"    // the bank's: the base rate
+	ScopeMarket  Scope = "market"  // a currency's: its official risk-free rate, written only by the market's feed
+	ScopeBank    Scope = "bank"    // the bank's: its policy's rates, spreads and lags
 	ScopeVersion Scope = "version" // the version's: its rate, its cycle
 	ScopeAccount Scope = "account" // one account's: a maturity day
 )
+
+// RiskFreeRateKey is the one parameter every market publishes: the
+// currency's official risk-free rate in basis points (GBP: the Bank of
+// England's Bank Rate). A declaration at ScopeMarket names this key; the
+// runner resolves it for the currency of the product whose rules read it.
+const RiskFreeRateKey = "risk_free_rate_bps"
 
 // Kind is a parameter's type, which fixes how its text is read.
 type Kind string

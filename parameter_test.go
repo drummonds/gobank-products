@@ -51,3 +51,18 @@ func TestDerivationSpreadFloorAndCap(t *testing.T) {
 		t.Errorf("no floor: %d, want -65 (a negative rate is allowed)", got)
 	}
 }
+
+// The market scope is the contract's name for a currency's official
+// risk-free rate (gobank ADR-0009): a declaration at that scope names the
+// key alone, the owner being the currency of the product that reads it,
+// and the one key every market publishes is RiskFreeRateKey.
+func TestMarketScopeNamesTheRiskFreeRate(t *testing.T) {
+	d := gbp.Declaration{Key: gbp.RiskFreeRateKey, Scope: gbp.ScopeMarket, Kind: gbp.KindBps}
+	if d.Scope != "market" || d.Key != "risk_free_rate_bps" {
+		t.Errorf("market declaration = %+v", d)
+	}
+	p, err := d.Parse("-10")
+	if err != nil || p.Bps() != -10 {
+		t.Errorf("a market rate may be negative: %+v, %v", p, err)
+	}
+}
