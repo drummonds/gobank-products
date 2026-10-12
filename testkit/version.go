@@ -13,6 +13,13 @@ import (
 // publishes, and that it answers start-up.
 func CheckVersion(t *testing.T, v gbp.Version, product string, number int) {
 	t.Helper()
+	CheckVersionWith(t, v, product, number, nil)
+}
+
+// CheckVersionWith is CheckVersion with the bank's settings written first
+// by setup, for a version whose start-up reads the bank or the market.
+func CheckVersionWith(t *testing.T, v gbp.Version, product string, number int, setup func(*Runner)) {
+	t.Helper()
 	if v.Product() != product || v.Version() != number || v.Name() == "" {
 		t.Errorf("identity = %s v%d %q, want %s v%d", v.Product(), v.Version(), v.Name(), product, number)
 	}
@@ -25,11 +32,11 @@ func CheckVersion(t *testing.T, v gbp.Version, product string, number int) {
 			t.Errorf("parameter %s declared twice", d.Key)
 		}
 		seen[d.Key] = true
-		if d.Scope == gbp.ScopeVersion && d.Published == "" && d.Derived == nil {
+		if d.Scope == gbp.ScopeVersion && d.Published == "" && !d.IsDerived() {
 			t.Errorf("parameter %s: a version-scoped parameter publishes a value or derives one", d.Key)
 		}
 	}
-	r := Open(t, v, "Liability:Check:"+product, time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC))
+	r := OpenWith(t, v, "Liability:Check:"+product, time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), setup)
 	if len(r.Reads) != 0 && r.Reads[0].Key == "" {
 		t.Errorf("reads = %+v", r.Reads)
 	}

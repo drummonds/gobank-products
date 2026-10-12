@@ -10,6 +10,9 @@ version. A rule here is code, and a change to it is a new version.
 |---|---|---|---|---|---|
 | `easyaccess/v1` | Savings | `rate_bps` | version | bps | 150 |
 | | | `cycle` | version | cycle | monthly |
+| `easyaccess/v2` | Savings | `savings_rate_bps` | bank | bps | read from the bank's policy |
+| | | `rate_bps` | version | bps | derived: `savings_rate_bps` − 15 bps, floor 0 |
+| | | `cycle` | version | cycle | monthly |
 | `fixedterm/v1` | Savings | `rate_bps` | version | bps | 400 |
 | | | `cycle` | version | cycle | monthly |
 | | | `term_months` | version | int | 24 |

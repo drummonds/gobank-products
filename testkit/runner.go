@@ -2,7 +2,6 @@ package testkit
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 	"time"
 
@@ -25,15 +24,10 @@ type Runner struct {
 	processed time.Time // the last day the Day event ran for; zero until it has
 	account   *luca.Account
 	cash      *luca.Account
-	settings  map[gbp.Scope]map[string][]dated
+	reader    *Reader // the version's declarations over the settings by scope
 	// Reads is every parameter the last event's rule read, in order: what
 	// the bank records against the postings the rule called for.
 	Reads []gbp.Param
-}
-
-type dated struct {
-	text      string
-	effective time.Time
 }
 
 // Open opens an account on version v at path on day, after the version's
@@ -48,7 +42,7 @@ func Open(t *testing.T, v gbp.Version, path string, day time.Time) *Runner {
 func OpenWith(t *testing.T, v gbp.Version, path string, day time.Time, setup func(*Runner)) *Runner {
 	t.Helper()
 	r := &Runner{t: t, Ledger: NewTestLedger(t), version: v, day: startOfDay(day),
-		settings: map[gbp.Scope]map[string][]dated{gbp.ScopeBank: {}, gbp.ScopeVersion: {}, gbp.ScopeAccount: {}}}
+		reader: NewReader(fmt.Sprintf("%s v%d", v.Product(), v.Version()), v.Parameters())}
 	var err error
 	if r.cash, err = r.Ledger.CreateAccount("Asset:Cash", "GBP", -2, 0); err != nil {
 		t.Fatal(err)
@@ -69,6 +63,12 @@ func OpenWith(t *testing.T, v gbp.Version, path string, day time.Time, setup fun
 	return r
 }
 
+// SetMarket writes a market-scoped setting effective from a day: the
+// market's publication of its risk-free rate.
+func (r *Runner) SetMarket(key, text string, effective time.Time) {
+	r.set(gbp.ScopeMarket, key, text, effective)
+}
+
 // SetBank writes a bank-scoped setting effective from a day.
 func (r *Runner) SetBank(key, text string, effective time.Time) {
 	r.set(gbp.ScopeBank, key, text, effective)
@@ -81,7 +81,7 @@ func (r *Runner) SetVersion(key, text string, effective time.Time) {
 }
 
 func (r *Runner) set(scope gbp.Scope, key, text string, effective time.Time) {
-	r.settings[scope][key] = append(r.settings[scope][key], dated{text, startOfDay(effective)})
+	r.reader.Set(scope, key, text, effective)
 }
 
 // Day is the day the runner is on.
@@ -263,7 +263,8 @@ func (r *Runner) ensure(path string) *luca.Account {
 func (r *Runner) facts() gbp.Facts { return facts{r} }
 
 // facts is the runner's Facts: the ledger for positions and balance, the
-// settings by scope for parameters (ADR-0006, parameter resolution).
+// Reader for parameters (ADR-0006, parameter resolution), every read
+// logged.
 type facts struct{ r *Runner }
 
 func (f facts) Account() string { return f.r.account.ID }
@@ -282,40 +283,15 @@ func (f facts) Position(day time.Time) (luca.Position, bool) {
 
 func (f facts) Balance() luca.Amount { return f.r.Balance() }
 
+// Parameter resolves through the reader with the facts as the reader a
+// derivation reads through, so an algorithm's reads are logged before the
+// value it answered.
 func (f facts) Parameter(key string, day time.Time) (gbp.Param, error) {
-	p, err := f.resolve(key, startOfDay(day))
+	p, err := f.r.reader.resolve(f, key, startOfDay(day))
 	if err == nil {
 		f.r.Reads = append(f.r.Reads, p)
 	}
 	return p, err
-}
-
-func (f facts) resolve(key string, day time.Time) (gbp.Param, error) {
-	d, ok := gbp.Declared(f.r.version, key)
-	if !ok {
-		return gbp.Param{}, fmt.Errorf("parameter %s: not declared by %s v%d", key, f.r.version.Product(), f.r.version.Version())
-	}
-	if d.Derived != nil {
-		source, err := f.resolve(d.Derived.Source, day)
-		if err != nil {
-			return gbp.Param{}, err
-		}
-		return d.Parse(strconv.FormatInt(d.Derived.Apply(source.Bps()), 10))
-	}
-	var text string
-	found := false
-	for _, s := range f.r.settings[d.Scope][key] {
-		if !s.effective.After(day) {
-			text, found = s.text, true // later-effective settings come later in the list
-		}
-	}
-	if !found && d.Scope == gbp.ScopeVersion && d.Published != "" {
-		text, found = d.Published, true
-	}
-	if !found {
-		return gbp.Param{}, fmt.Errorf("parameter %s: no %s setting on %s", key, d.Scope, day.Format("2006-01-02"))
-	}
-	return d.Parse(text)
 }
 
 func startOfDay(t time.Time) time.Time {

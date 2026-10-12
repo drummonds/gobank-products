@@ -73,24 +73,52 @@ A refusal is `gbp.Refuse("reason")`; the runner tells it from a fault with
 ```go
 type Declaration struct {
     Key       string
-    Scope     Scope       // bank | version | account
+    Scope     Scope       // market (owner the currency; key RiskFreeRateKey) | bank | version | account
     Kind      Kind        // bps | money | int | cycle | day | text
-    Published string      // the value at adoption (version scope)
-                          // scope: market (owner the currency; key RiskFreeRateKey), bank, version, account
-    Derived   *Derivation // Source, SpreadBps, Floor, Cap
+    Published string      // the value at adoption (a version's own scope; the bank's for a policy)
+    Derived   *Derivation // a formula: Source, SpreadBps, Floor, Cap
+    Algorithm Algorithm   // code: func(p ParameterReader, day time.Time) (string, error)
 }
 ```
 
 The runner resolves a parameter for a day (gobank ADR-0006, parameter
-resolution): a derived parameter from its source and the formula; a
-declared one from the latest setting effective on or before the day at its
-scope, or, at version scope, from the published value. A setting effective
-after the day is invisible to it, which is how a future rate change is
-decided today and takes effect on its day with nothing to do.
+resolution): a derived parameter from its source and the formula, or by
+running its algorithm over the reader (the reads it makes are logged as
+the rule's own); a declared one from the latest setting effective on or
+before the day at its scope, or from the published value. A setting
+effective after the day is invisible to it, which is how a future rate
+change is decided today and takes effect on its day with nothing to do.
+
+A formula is one the bank can describe from its fields; an algorithm is
+whatever its declarer's code says, described in words in the
+declaration. The bank's policy derives its rates by algorithm (gobank
+ADR-0006, ADR-0009): a savings rate that follows the market down at once
+and up after a lag reads the market on the day and the lag's days
+earlier and takes the lower. `IsDerived` is true of either: a derived
+parameter is read, never set.
 
 `gbp.Interest` is the interest-bearing account's rules, which a version
 embeds and overrides where its product differs. `gbp.CheckDeclarations`
 is the start-up check every version shares.
+
+## Policy
+
+```go
+type Policy interface {
+    Name() string
+    Version() int
+    Parameters() []Declaration // at the bank scope, and the market's it reads
+    StartUp(p ParameterReader, day time.Time) error
+}
+```
+
+A policy is a bank's own rules as versioned code (gobank ADR-0006,
+ADR-0007): the values it publishes for staff to set (a spread, a lag) and
+the rates it derives from the market and from them by algorithm. It
+answers no account event; a version reads the bank's rates by declaring
+them at the bank scope (`easyaccess/v2` reads `savings_rate_bps`). It
+lives in the bank's own module, immutable once adopted as a version is.
+`gbp.CheckPolicy` is its start-up check.
 
 ## Testing a version
 
@@ -102,7 +130,12 @@ testkit.Golden(t, "easy_access_32d", r.Export())
 ```
 
 `testkit.Runner` is the reference runner: it implements `Facts` over an
-in-memory go-luca ledger and settings by scope, carries out every intent,
-surfaces refusals from `TryDeposit` and `TryWithdraw`, and logs the
-parameters each rule read in `Reads`. `testkit.CheckVersion` asserts a
-version's identity and declarations. `GOLDEN_UPDATE=1` rewrites a golden.
+in-memory go-luca ledger and settings by scope (`SetMarket`, `SetBank`,
+`SetVersion`), carries out every intent, surfaces refusals from
+`TryDeposit` and `TryWithdraw`, and logs the parameters each rule read in
+`Reads`. `testkit.CheckVersion` asserts a version's identity and
+declarations; `CheckVersionWith` writes the bank's settings first for a
+version whose start-up reads them. `GOLDEN_UPDATE=1` rewrites a golden.
+
+`testkit.Reader` is the parameter resolution alone, over one declarer's
+declarations and in-memory settings: what a policy tests through.

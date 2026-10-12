@@ -1,0 +1,7 @@
+commodity GBP
+
+2026-01-01%2026-10-12T23:34:46.696843759Z * Deposit
+  Liability:Savings:alice → Asset:Cash 1000 GBP
+
+2026-01-31T23:59:59Z%2026-10-12T23:34:46.729154197Z * Interest applied for month ending 2026-01-31
+  Expense:Interest → Liability:Savings:alice -1.33 GBP

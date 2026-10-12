@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- `Declaration.Algorithm`, a parameter derived by code: a function of the
+  parameters it reads through the reader on a day, answering in the
+  declaration's kind, for the bank's policy to express lag and take
+  (gobank ADR-0006, ADR-0009). `Declaration.IsDerived` is true of a
+  formula or an algorithm. `CheckDeclarations` refuses a derived parameter
+  that publishes a value, or one with both a formula and an algorithm.
+- `Policy`, a bank's own rules as versioned code (gobank ADR-0007): its
+  bank-scoped declarations and start-up check; `CheckPolicy`.
+  `SavingsRateKey` and `LendingRateKey` name the bank's rates, which a
+  policy declares and a tracking version reads.
+- `easyaccess/v2`, Easy Access Tracker: the rate is the bank's
+  `savings_rate_bps` less 15 bps, floor 0, read from the bank's policy;
+  its golden runs a cut mid-month.
+- testkit: `Reader`, the parameter resolution alone over declarations and
+  in-memory settings, which the Runner now reads through; `SetMarket`;
+  `CheckVersionWith`, for a version whose start-up reads the bank.
+
 ## [0.8.0] - 2026-10-12
 
  - Posting.Step names a posting within its event (gobank ADR-0011); the day rule reads UTC days

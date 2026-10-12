@@ -1,6 +1,8 @@
 package testkit_test
 
 import (
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -177,5 +179,63 @@ func TestRunnerPostsInTheBanksView(t *testing.T) {
 	current.Withdraw(15000)
 	if current.Balance() != 5000 {
 		t.Errorf("current account after withdrawal = %d, want 5000: overdrawn is a debit balance", current.Balance())
+	}
+}
+
+// lagged is a test version whose rate is an algorithm (gobank ADR-0006, a
+// parameter derived by code): the market's rate on the day or fourteen
+// days earlier, whichever is lower, less 100 bps. A cut reaches the
+// account at once, a rise after the lag.
+type lagged struct{ tracker }
+
+func (lagged) Product() string { return "lagged" }
+func (lagged) Parameters() []gbp.Declaration {
+	return []gbp.Declaration{
+		{Key: gbp.RiskFreeRateKey, Scope: gbp.ScopeMarket, Kind: gbp.KindBps},
+		{Key: "rate_bps", Scope: gbp.ScopeVersion, Kind: gbp.KindBps, Algorithm: func(p gbp.ParameterReader, day time.Time) (string, error) {
+			now, err := p.Parameter(gbp.RiskFreeRateKey, day)
+			if err != nil {
+				return "", err
+			}
+			then, err := p.Parameter(gbp.RiskFreeRateKey, day.AddDate(0, 0, -14))
+			if err != nil {
+				return "", err
+			}
+			return strconv.FormatInt(min(now.Bps(), then.Bps())-100, 10), nil
+		}},
+		{Key: "cycle", Scope: gbp.ScopeVersion, Kind: gbp.KindCycle, Published: "monthly"},
+		{Key: "opened_day", Scope: gbp.ScopeAccount, Kind: gbp.KindDay},
+	}
+}
+
+func TestRunnerResolvesAnAlgorithmAndLogsItsReads(t *testing.T) {
+	r := testkit.OpenWith(t, lagged{newTracker()}, "Liability:Savings:carol", day(2026, 1, 1), func(r *testkit.Runner) {
+		r.SetMarket(gbp.RiskFreeRateKey, "500", day(2025, 1, 1))
+		r.SetMarket(gbp.RiskFreeRateKey, "400", day(2026, 1, 10)) // a cut
+		r.SetMarket(gbp.RiskFreeRateKey, "450", day(2026, 2, 10)) // a rise, clear of the cut's lag
+	})
+	for _, c := range []struct {
+		on   time.Time
+		want int64
+	}{
+		{day(2026, 1, 5), 400},  // 500 − 100
+		{day(2026, 1, 10), 300}, // the cut, at once
+		{day(2026, 2, 10), 300}, // the rise, not yet
+		{day(2026, 2, 23), 300}, // the day before the lag ends
+		{day(2026, 2, 24), 350}, // 450 − 100, after the lag
+	} {
+		r.AdvanceTo(c.on)
+		p, err := r.Parameter("rate_bps")
+		if err != nil || p.Bps() != c.want {
+			t.Errorf("rate on %s = %d, %v; want %d", c.on.Format("2006-01-02"), p.Bps(), err, c.want)
+		}
+	}
+	var keys []string
+	for _, p := range r.Reads {
+		keys = append(keys, p.Key)
+	}
+	want := []string{gbp.RiskFreeRateKey, gbp.RiskFreeRateKey, "rate_bps"}
+	if len(keys) < 3 || strings.Join(keys[len(keys)-3:], " ") != strings.Join(want, " ") {
+		t.Errorf("reads = %v, want the algorithm's two market reads then the rate", keys)
 	}
 }

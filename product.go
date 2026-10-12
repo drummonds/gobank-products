@@ -46,6 +46,23 @@ type Version interface {
 	Rules
 }
 
+// Policy is a bank's own rules as versioned code (gobank ADR-0006,
+// ADR-0007): the parameters at the bank scope it declares, the values it
+// publishes for staff to set (a spread, a lag) and the rates it derives by
+// algorithm from the market and from them, and its start-up check. A
+// policy answers no account event: a product version reads the bank's
+// rates by declaring them at the bank scope. Immutable once adopted, as a
+// version is: a change to how the bank sets its rates is a new policy
+// version, a package in the bank's own module.
+type Policy interface {
+	Name() string
+	Version() int
+	Parameters() []Declaration
+	// StartUp runs once per process, with the parameters as the bank can
+	// resolve them on day. An error stops the bank.
+	StartUp(p ParameterReader, day time.Time) error
+}
+
 // Rules are a version's answers to the events. Every rule is pure: it
 // reads facts through the interface it is given and returns intents for
 // the runner to carry out, so it is the same however often it runs for
