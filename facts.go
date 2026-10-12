@@ -48,8 +48,13 @@ type Setting struct {
 
 // Posting is a ledger movement a rule calls for: from the counterparty to
 // the account, signed as the account's balance is, so a credit-normal
-// savings balance receives a negative amount.
+// savings balance receives a negative amount. Step names the posting
+// within the event the rule answered, so the runner records each posting
+// against its cause, the account and the step, and a replay of the event
+// finds the one already made (gobank ADR-0011): a rule that posts twice
+// under one event names two steps.
 type Posting struct {
+	Step         string // "apply": the posting's name within the event
 	Counterparty string // a P&L account path: Expense:Interest or Income:Interest
 	Amount       luca.Amount
 	Code         string

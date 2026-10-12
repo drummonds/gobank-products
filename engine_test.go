@@ -34,6 +34,7 @@ func TestApplyAccruedBooksWholeUnitsAndCarriesTheRemainder(t *testing.T) {
 		t.Fatalf("postings = %+v, want one", postings)
 	}
 	want := gbp.Posting{
+		Step:         "apply",
 		Counterparty: "Expense:Interest",
 		Amount:       -127, // 31 days at 150 bps on £1000 is 127.4p
 		Code:         luca.CodeInterestAccrual,

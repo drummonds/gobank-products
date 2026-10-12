@@ -92,6 +92,7 @@ func ApplyAccrued(family ProductFamily, pos luca.Position, description string) (
 		counterparty = "Income:Interest"
 	}
 	return next, []Posting{{
+		Step:         "apply",
 		Counterparty: counterparty,
 		Amount:       luca.Amount(units),
 		Code:         luca.CodeInterestAccrual,

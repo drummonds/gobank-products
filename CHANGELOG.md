@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- `Posting.Step` names a posting within the event the rule answered, so a
+  runner records it against its cause, the account and the step and a
+  replay finds the one already made (gobank ADR-0011). `ApplyAccrued`, the
+  one posting the v1 rules make, names it `apply`.
+
 ### Fixed
 - The day rule read a day in the zone it was given, so a runner handing an
   instant near midnight in another zone got positions keyed by a local
