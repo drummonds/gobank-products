@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-12
+
+ - Posting.Step names a posting within its event (gobank ADR-0011); the day rule reads UTC days
+
 ### Added
 - `Posting.Step` names a posting within the event the rule answered, so a
   runner records it against its cause, the account and the step and a
