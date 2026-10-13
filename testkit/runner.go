@@ -166,7 +166,7 @@ func (r *Runner) post(from, to *luca.Account, amount luca.Amount, description st
 // if it has not run yet, then each day after.
 func (r *Runner) Advance(n int) {
 	r.t.Helper()
-	for i := 0; i < n; i++ {
+	for range n {
 		if !r.processed.IsZero() {
 			r.day = r.processed.AddDate(0, 0, 1)
 		}

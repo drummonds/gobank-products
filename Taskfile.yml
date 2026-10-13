@@ -10,6 +10,7 @@ tasks:
     desc: Format Go source files
     cmds:
       - go fmt ./...
+      - go fix ./...
 
   vet:
     desc: Run Go vet

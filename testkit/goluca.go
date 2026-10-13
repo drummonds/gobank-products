@@ -39,7 +39,7 @@ func NormaliseGoluca(raw string) string {
 func splitBlocks(s string) []string {
 	var blocks []string
 	var current []string
-	for _, line := range strings.Split(s, "\n") {
+	for line := range strings.SplitSeq(s, "\n") {
 		trimmed := strings.TrimSpace(line)
 		if trimmed == "" {
 			if len(current) > 0 {

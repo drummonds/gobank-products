@@ -1,4 +1,5 @@
-docs/
+docs/*
+!docs/favicon.svg
 .task
 
 .vscode
