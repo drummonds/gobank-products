@@ -1,5 +1,6 @@
 maturity:
   code: 1
+merge_wait: 10m
 remotes:
   - name: origin
     forge: forgejo

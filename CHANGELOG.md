@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- `ROADMAP.md` follows task-plus ADR 0004: named epics of `- #N text`
+  lines, each an open issue labelled `roadmap` on the Bytestone Forgejo;
+  shipped items moved into this changelog under the versions that
+  finished them. `merge_wait: 10m` in `task-plus.yml`, so a release's
+  pull request is tagged and published in the same run once merged.
+  `CLAUDE.md` states the code-flow level 1 practice: one branch per story,
+  every change through a pull request.
+
 ## [0.10.0] - 2026-10-13
 
 ## [0.9.0] - 2026-10-13
@@ -29,6 +38,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - testkit: `Reader`, the parameter resolution alone over declarations and
   in-memory settings, which the Runner now reads through; `SetMarket`;
   `CheckVersionWith`, for a version whose start-up reads the bank.
+
+### Roadmap
+- `Policy` and `Declaration.Algorithm`, a parameter derived by code;
+  `easyaccess/v2` tracking the bank's savings rate (gobank story 1.8.9)
 
 ## [0.8.0] - 2026-10-12
 
@@ -123,6 +136,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
   and the FSMs. gobank stays on v0.3.0 until its story 1.8.2 adopts the
   contract.
 
+### Roadmap
+- The product contract and six v1 version packages (gobank ADR-0006,
+  story 1.8.1): rules pure over facts, intents carried out by the runner,
+  parameters declared with scope, kind and derivation; the feature
+  framework and simulation engine retired
+- Golden `.goluca` tests per version, byte-identical to the framework's
+
 ## [0.3.0] - 2026-10-05
 
  - Product.Accrue and Product.Apply split the day rule for gobank stage 3 story (e); RateBps exported
@@ -140,6 +160,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `RateBps`, the conversion from a product's annual rate to the integer
   basis points the day rule accrues in, exported from the engine for
   callers that run the rules without it.
+
+### Roadmap
+- `Accrue`/`ApplyAccrued`: the day rule over go-luca positions, with the
+  application cycle a parameter (gobank ADR-0002 stage 3)
 
 ## [0.2.0] - 2026-10-05
 
