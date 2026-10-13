@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-13
+
+ - Policy as code: a parameter derived by code, the Policy contract, easyaccess/v2 tracking the bank's savings rate (gobank story 1.8.9)
+
 ### Added
 - `Declaration.Algorithm`, a parameter derived by code: a function of the
   parameters it reads through the reader on a day, answering in the
