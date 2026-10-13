@@ -1,3 +1,5 @@
+maturity:
+  code: 1
 remotes:
   - name: origin
     forge: forgejo
