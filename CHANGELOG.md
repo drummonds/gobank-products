@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-13
+
+ - Roadmap as forge issues (task-plus ADR 0004); release waits for the merge
+
 ### Changed
 - `ROADMAP.md` follows task-plus ADR 0004: named epics of `- #N text`
   lines, each an open issue labelled `roadmap` on the Bytestone Forgejo;
